@@ -66,9 +66,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh """
-                            echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                             docker push ${BACKEND_IMAGE}:latest
-                            docker logout
                         """
                     }
                 }
@@ -81,9 +80,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh """
-                            echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                             docker push ${FRONTEND_IMAGE}:latest
-                            docker logout
                         """
                     }
                 }
@@ -102,7 +100,7 @@ pipeline {
                                 echo '#!/bin/bash
                                 export DOCKER_USERNAME="${DOCKER_USERNAME}"
                                 export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
-                                echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                                 cd /home/appuser/myApp
                                 docker-compose pull
                                 docker-compose up -d
