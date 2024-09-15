@@ -1,0 +1,214 @@
+@import "../../assets/variables.scss";
+
+.header {
+  border: 1px solid #e5e7ea;
+  position: sticky;
+  top: 0%;
+  left: 0%;
+  z-index: 700;
+  background-color: #fff;
+  .container {
+    .bigHeader {
+      @media screen and (max-width: 768px) {
+        display: none;
+      }
+      height: 76px;
+      padding: 20px 0px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .part_one {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+        nav {
+          gap: 30px;
+          display: flex;
+          justify-content: space-between;
+          a {
+            font-family: $font_Rubik;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 24px;
+            text-align: center;
+            color: #6d717f;
+            &.active {
+              font-family: $font_inter;
+              color: $main_color_box;
+              transition: $transtion;
+              font-weight: 600;
+              border-bottom: 1px solid $main_color_box;
+            }
+          }
+        }
+      }
+    }
+    .smallHeader {
+      overflow: hidden;
+      display: none;
+      .box {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      img {
+        width: 40px;
+        height: 40px;
+      }
+      @media screen and (max-width: 768px) {
+        display: block;
+        .item {
+          display: flex;
+          align-items: center;
+          height: 76px;
+          padding: 20px 0px;
+          justify-content: space-between;
+        }
+      }
+      .dropDown {
+        max-height: 0px;
+        transition: $transtion;
+        &.open {
+          max-height: 600px;
+        }
+        nav.two {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin: 20px 0px;
+        }
+      }
+      .fromlogin {
+        padding: 20px 0px;
+        border-top: 1px solid #233545;
+        .img {
+          position: relative;
+          cursor: pointer;
+          img {
+            width: 18px;
+            height: 21px;
+          }
+          p {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: red;
+            right: -1px;
+          }
+        }
+
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+    .profile {
+      display: flex;
+      &.two {
+        flex-direction: column;
+      }
+      .img {
+        position: relative;
+        cursor: pointer;
+        img {
+          width: 18px;
+          height: 21px;
+        }
+        p {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: red;
+          right: -1px;
+        }
+      }
+      align-items: center;
+      gap: 10px;
+      .chakra-button {
+        background-color: transparent;
+        height: fit-content;
+      }
+      h3 {
+        text-align: center;
+        font-family: $font_Rubik;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        color: #9ea2ae;
+      }
+      .flexer {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        h3 {
+          font-family: $font_Rubik;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 18px;
+          color: #131927;
+        }
+      }
+    }
+    .logicAuth {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      &.small {
+        border-top: 1px solid;
+        padding: 20px 0px;
+        justify-content: space-between;
+      }
+      .up {
+        background-color: #233545;
+        padding: 5px 20px;
+        color: white;
+        border-radius: 5px;
+        font-weight: 700;
+      }
+      .log {
+        border: 1px solid #233545;
+        padding: 5px 20px;
+        color: #233545;
+        border-radius: 5px;
+        font-weight: 700;
+      }
+    }
+    .lang {
+      button {
+        padding: 0%;
+        background-color: transparent;
+      }
+      .itemlang {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        gap: 10px;
+        img {
+          width: 30px;
+          height: 30px;
+        }
+        color: #000;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+      }
+      .chakra-popover__content {
+        width: fit-content;
+        padding: 0px 8px;
+      }
+    }
+    .chakra-menu__menuitem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: transparent !important;
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}

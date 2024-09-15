@@ -1,0 +1,287 @@
+body.ar {
+  .pricing {
+    .qr {
+      right: auto !important;
+      left: 10px;
+    }
+    .share {
+      right: auto !important;
+      left: 20px;
+    }
+    label {
+      span {
+        .css-7roig[data-checked] {
+          transform: translateX(-14px);
+        }
+      }
+    }
+  }
+}
+
+.pricing {
+  .container {
+    margin-top: 40px;
+    & > h1 {
+      text-align: center;
+      color: #000;
+      font-family: Roboto;
+      font-size: 50.625px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      letter-spacing: 4.556px;
+    }
+    h3.small {
+      text-align: center;
+      color: #000;
+      font-family: Roboto;
+      font-size: 25.313px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+    }
+    .switch {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      p {
+        color: #000;
+        font-family: Roboto;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+      }
+      .dis {
+        color: #000;
+        font-family: Roboto;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        border-radius: 8px;
+        background: rgba(255, 199, 0, 0.58);
+        padding: 5px;
+      }
+    }
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      @media screen and (max-width : 500px) {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      }
+      align-items: end;
+      margin-top: 30px;
+      gap: 15px;
+      .box {
+        padding: 20px;
+        background-color: #233545;
+        border-radius: 17.711px;
+        &:nth-child(1) {
+          color: #fff;
+          .benifits{
+            p{
+                margin-bottom: 35px;
+            }
+          }
+        }
+        .info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          p {
+            font-family: Roboto;
+            font-size: 39.85px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            @media screen and (max-width : 550px) {
+              font-size: 28px;
+            }
+          }
+          h5 {
+            font-size: 20px;
+            font-weight: 700;
+          }
+        }
+        .benifits {
+          p:nth-child(1) {
+            margin-bottom: 30px;
+          }
+          p {
+            font-family: Roboto;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin-bottom: 20px;
+          }
+        }
+        .card {
+          position: relative;
+          background-color: #405363;
+          border-radius: 10px;
+          display: flex;
+          min-height: 200px;
+          padding: 10px;
+          gap: 10px;
+          align-items: center;
+          .img {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            img{
+                z-index: 1000;
+            }
+            .rate {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              P {
+              }
+            }
+          }
+          .con {
+            h3 {
+              color: #fff;
+              font-family: "Space Grotesk";
+              font-size: 20px;
+              font-style: normal;
+              font-weight: 500;
+              line-height: normal;
+            }
+            p {
+              color: #fff;
+              font-family: "Space Grotesk";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+            .scoial {
+              margin-top: 15px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            }
+          }
+          .share {
+            position: absolute;
+            right: 20px;
+            bottom: 10px;
+            z-index: 1000;
+          }
+          .qr {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+          }
+          .location {
+            margin-top: 10px;
+            display: flex;
+          }
+        }
+        button {
+          width: 100%;
+          background-color: #fff;
+          padding: 15px 0px;
+          margin-top: 30px;
+          color: #233545;
+          font-weight: bold;
+          border-radius: 10px;
+        }
+        &:nth-child(2),
+        &:nth-child(3) {
+          border: 1.107px solid #000;
+          background: #fff;
+          color: #000;
+          .card{
+            @media screen and (max-width : 550px) {
+              .con {
+                padding-top: 55px;
+              }
+            }
+          }
+          button {
+            width: 100%;
+            color: #fff;
+            padding: 15px 0px;
+            margin-top: 30px;
+            background-color: #233545;
+            font-weight: bold;
+            border-radius: 10px;
+          }
+        }
+        &:nth-child(2) {
+          .card {
+            background-color: #115b43;
+            position: relative;
+            &::after {
+              content: "";
+              position: absolute;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: white;
+              opacity: 0.15;
+              clip-path: circle(38.3% at 53% 51%);
+            }
+          }
+        }
+        &:nth-child(3) {
+          .card {
+            background-color: #dec369;
+            margin-top: 70px;
+            &::after {
+              content: "";
+              position: absolute;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: #233545;
+              opacity: 0.15;
+              clip-path: polygon(
+                100% 0,
+                100% 20%,
+                100% 60%,
+                100% 100%,
+                0 100%,
+                0 2%,
+                52% 89%
+              );
+            }
+            .con {
+              h3,
+              p {
+                color: #233545;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .link {
+    margin: 40px 0px;
+    text-align: center;
+    color: #000;
+    font-family: Roboto;
+    font-size: 23.203px;
+    @media screen and (max-width : 500px) {
+      font-size: 20px;
+    }
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    a {
+      color: #000;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+  }
+}

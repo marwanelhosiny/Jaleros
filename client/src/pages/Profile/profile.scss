@@ -1,0 +1,89 @@
+.profilePage {
+  margin: 40px 0px;
+  display: flex;
+  min-height: 60vh;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  .contentPage {
+    position: relative;
+    width: 400px;
+    @media screen and (max-width: 600px) {
+      width: 350px;
+    }
+    .box {
+      transition: 0.4s allow-discrete;
+      transform: scale(0);
+      display: none;
+
+      &.active {
+        display: block;
+        transform: scale(1);
+        @starting-style {
+          transform: scale(0);
+        }
+      }
+    }
+  }
+
+  .NoCards {
+    height: 70.7vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    h1 {
+      color: #011334;
+      font-family: Rubik;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+    }
+    a {
+      font-family: Rubik;
+      font-size: 25px;
+      font-style: normal;
+      font-weight: 700;
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #212936;
+    }
+  }
+
+  .pagi {
+    margin: 20px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    span {
+      display: block;
+      border: 2px solid #212936;
+      width: 25px;
+      height: 25px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-weight: bold;
+      &.active{
+        background-color: #212936;
+        border: none;
+        color: #fff;
+      }
+    }
+  }
+
+  .Create {
+    background-color: #212936;
+    color: #fff;
+    width: 100%;
+    padding: 10px 0px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}

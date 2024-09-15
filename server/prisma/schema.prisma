@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          Int      @id @default(autoincrement())
+  fullName    String
+  email       String   @unique
+  phoneNumber String?
+  password    String
+  isAdmin     Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  OTP         String?
+
+  // Relation field
+  cards       Card[]   // One-to-many relationship (a user can have multiple cards)
+
+  // Follow relationships
+  following Follow[] @relation("FollowingRelation") // Users this user is following
+  followers Follow[] @relation("FollowerRelation")  // Users that follow this user
+}
+
+model Follow {
+  id          Int    @id @default(autoincrement())
+  followerId  Int    // Follower's User ID
+  followingId Int    // Followed User's ID
+
+  // Relationships
+  follower    User   @relation("FollowingRelation", fields: [followerId], references: [id])
+  following   User   @relation("FollowerRelation", fields: [followingId], references: [id])
+
+  // Unique constraint to ensure a user can't follow the same person twice
+  @@unique([followerId, followingId])
+
+  // Optional index for efficient lookups
+  @@index([followerId])
+  @@index([followingId])
+}
+
+enum CardType {
+  basic
+  premium
+  professional
+}
+
+
+model Card {
+  id          Int      @id @default(autoincrement())
+  userId      Int      
+  name        String   @default("Unnamed Card")
+  rate        Int
+  phoneNumber String?
+  email       String?
+  country     String?
+  city        String?
+  location    String?
+  about       String?
+  profilePic  String?
+  coverPic    String?
+  gallery     String[]
+  cv          String?
+  mediaFolder String?
+  type        CardType @default(basic)
+  sponsored   Boolean  @default(false) 
+
+  
+
+  hidden      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign key relation
+  user        User     @relation(fields: [userId], references: [id]) // Foreign key to User model
+
+  // Relation field
+  social       Social?   // One-to-One relationship (a card can have one social)
+
+  // Index on the foreign key for performance
+  @@index([userId])
+
+}
+
+model Social {
+  id          Int    @id @default(autoincrement())
+  cardId      Int    @unique
+  facebook   String?
+  instagram  String?
+  youtube    String?
+  X          String?
+  tikTok     String?
+  snapchat   String?
+  linkedin   String?
+  telegram   String?
+  reddit     String?
+  pinterest  String?
+  custom1    String?
+  custom2    String?
+  custom3    String?
+
+
+
+  // Foreign key relation
+  card        Card     @relation(fields: [cardId], references: [id], onDelete: Cascade) // Foreign key to Card model
+
+  // Index on the foreign key for performance
+  @@index([cardId])
+}
+

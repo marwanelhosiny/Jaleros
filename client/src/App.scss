@@ -1,0 +1,277 @@
+@import "./assets/variables.scss";
+
+// fonts
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: $main_color_bg;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  width: 85%;
+  margin: 0% auto;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
+.smallHide {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+.smallShow {
+  display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
+    margin: 15px 0px;
+  }
+}
+
+.titleSection {
+  margin: 10px 0px;
+  @media screen and (max-width: 768px) {
+    font-size: 22px !important ;
+  }
+}
+
+.smallTitle {
+  font-size: 20px;
+}
+
+// In chakra_Ui
+
+body.ar {
+  .chakra-modal__close-btn {
+    right: auto;
+    left: 10px;
+  }
+}
+
+.notiHeader {
+  display: flex;
+  justify-content: space-between;
+  p {
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    &.click {
+      padding-bottom: 8px;
+      border-bottom: 1px solid $main_color_box;
+    }
+  }
+}
+
+.chakra-modal__footer {
+  border-top: 1px solid #d0d2d4;
+  button {
+    background-color: $main_color_box;
+    border: none;
+  }
+}
+
+.signLogin {
+  padding: 20px;
+  .title {
+    h1 {
+      color: #020127;
+      font-family: Inter;
+      font-size: 25px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 29px;
+    }
+    p {
+      color: #5b6584;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+    }
+  }
+  .operation {
+    display: flex;
+    justify-content: space-between;
+    border: 1.5px solid #bfbdbd;
+    border-radius: 10px;
+    p {
+      width: 50%;
+      text-align: center;
+      padding: 10px 0px;
+      color: #233545;
+      font-family: Inter;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      transform: translateY(4px);
+      &.active {
+        background-color: #233545;
+        color: white;
+        border-radius: 10px;
+        margin: 4px 0px;
+        transform: translateY(0px);
+      }
+    }
+  }
+  p.forget {
+    color: #020127;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 10px;
+  }
+  button.log,
+  button.create {
+    width: 100%;
+    margin: 10px 0px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #233545;
+    color: #fff;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    text-transform: uppercase;
+  }
+
+  .another {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    p {
+      color: #020127;
+      font-family: Inter;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    h5 {
+      color: #5b6584;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+    }
+    .btns {
+      margin-top: 10px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      @media screen and (max-width: 500px) {
+        flex-direction: column;
+      }
+      button {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        p {
+          color: #020127;
+          font-family: Inter;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 20px;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}
+
+.otp {
+  display: flex;
+  padding: 30px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  header {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 17.942px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding: 0%;
+  }
+  .email {
+    color: #3a3a3a;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 13.962px;
+    font-style: normal;
+    font-weight: 600;
+    margin: 20px 0px 10px 0px;
+    h3 {
+      color: #3a3a3a;
+      font-family: Montserrat;
+      font-size: 17.962px;
+      font-style: normal;
+      font-weight: 900;
+    }
+  }
+  .chakra-stack {
+    justify-content: center;
+  }
+  .donot {
+    color: #807f7f;
+    margin: 10px 0px;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 12.466px;
+    font-style: normal;
+    font-weight: 400;
+    button {
+      color: #1d3bff;
+      font-family: Montserrat;
+      font-size: 14.466px;
+      font-style: normal;
+      font-weight: 400;
+    }
+  }
+  .verify {
+    color: #fff;
+    font-family: Montserrat;
+    font-size: 14.955px;
+    background-color: #233545;
+    border-radius: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    width: 235.494px;
+    height: 53.827px;
+    flex-shrink: 0;
+  }
+}
+
+// In chakra_Ui

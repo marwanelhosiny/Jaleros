@@ -1,0 +1,253 @@
+import React, { useEffect, useState } from "react";
+import basicBG from "../../assets/images/card/BAckground Image.png";
+import blacKBallCard from "../../assets/images/card/blackBallCard.png";
+import goldBallCard from "../../assets/images/card/goldBallCard.png";
+import greenBallCard from "../../assets/images/card/greenBallCard.png";
+import whiteBallCard from "../../assets/images/card/whiteBallCard.png";
+import link from "../../assets/images/card/Link.png";
+import linkBlack from "../../assets/images/LinkWhite.png";
+import share from "../../assets/images/Pricing/box-2/share.png";
+import shareBlack from "../../assets/images/shareBlack.png";
+import star from "../../assets/images/Pricing/Star.png";
+import qr from "../../assets/images/Pricing/qrcode.png";
+import shape from "../../assets/images/card/Vector.png";
+import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./CardProfile.scss";
+import { useToast } from "@chakra-ui/react";
+
+const socialIcons = {
+  email: <i class="fa-solid fa-envelope"></i>,
+  facebook: <i class="fa-brands fa-facebook-f"></i>,
+  youtube: <i class="fa-brands fa-youtube"></i>,
+  instagram: <i class="fa-brands fa-square-instagram"></i>,
+  X: <i class="fa-brands fa-x-twitter"></i>,
+  tikTok: <i class="fa-brands fa-tiktok"></i>,
+  snapchat: <i class="fa-brands fa-snapchat"></i>,
+  linkedin: <i class="fa-brands fa-linkedin-in"></i>,
+  telegram: <i class="fa-brands fa-telegram"></i>,
+  reddit: <i class="fa-brands fa-reddit-alien"></i>,
+  pinterest: <i class="fa-brands fa-pinterest-p"></i>,
+  custom1: <i class="fa-solid fa-user-secret"></i>,
+  custom2: <i class="fa-solid fa-users-viewfinder"></i>,
+  custom3: <i class="fa-solid fa-user-astronaut"></i>,
+};
+
+const baseProfile =
+  "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg";
+
+function CardProfile({ card, forPreview = false }) {
+  const [socialLinks, setSocialLinks] = useState([]);
+  const [flag, setFlag] = useState(true);
+  const [mode, setMode] = useState(localStorage.modeCard || "default");
+  const navigate = useNavigate();
+  const handleSocialLinks = () => {
+    const social = card?.social;
+    for (const key in social) {
+      if (
+        social[key] !== null &&
+        social[key] !== " " &&
+        key !== "id" &&
+        key !== "cardId"
+      ) {
+        setSocialLinks((prev) => [
+          ...prev,
+          { link: social[key], platform: key },
+        ]);
+      }
+    }
+  };
+  const toast = useToast();
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `http://localhost:3500/previewCard/${card.id}`
+      );
+      toast({
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+        title: t("Copy Done"),
+        status: "success",
+      });
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  const handleChangeTheme = (e) => {
+    const { mode } = e.target.dataset;
+    localStorage.modeCard = mode;
+    setMode(mode);
+  };
+
+  useEffect(() => {
+    handleSocialLinks();
+  }, [card]);
+
+  return (
+    <div className={`cardProfile ${mode}`}>
+      <div className="backImg">
+        <img src={card?.coverPic || basicBG} alt="" />
+      </div>
+      <div className="all">
+        <div className="profile">
+          <div className="mega">
+            <div className="pic">
+              <div className="followers">
+                <p>{card?.followers || "320"}</p>
+                <p>{t("Followers")}</p>
+              </div>
+              <img src={card?.profilePic || baseProfile} alt="" />
+              <div className="followers two">
+                <p>{card?.following || "320"}</p>
+                <p>{t("Following")}</p>
+              </div>
+            </div>
+            <div className={`info`}>
+              <h1>{card?.name || "Jemy"}</h1>
+              <h3>{card?.role || "FullStack Developer"}</h3>
+              <h3 className="location">
+                <i className="fa-solid fa-location-dot"></i>{" "}
+                {card?.location || "No Location"}
+              </h3>
+              {!card?.storeLink && (
+                <a
+                  href={card?.storeLink}
+                  target="blank"
+                  className={mode == "white" && "white"}
+                >
+                  <img src={mode == "white" ? linkBlack : link} alt="" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="info_operations">
+          <div className="part-1">
+            <div className="mode">
+              <p>{t("mode")}</p>
+              <div className="imgs">
+                <img
+                  src={blacKBallCard}
+                  alt=""
+                  data-mode={"black"}
+                  onClick={(e) => handleChangeTheme(e)}
+                />
+                <img
+                  src={whiteBallCard}
+                  alt=""
+                  data-mode={"white"}
+                  onClick={(e) => handleChangeTheme(e)}
+                />
+                <img
+                  src={greenBallCard}
+                  alt=""
+                  data-mode={"green"}
+                  onClick={(e) => handleChangeTheme(e)}
+                />
+                <img
+                  src={goldBallCard}
+                  alt=""
+                  data-mode={"gold"}
+                  onClick={(e) => handleChangeTheme(e)}
+                />
+                <div
+                  className="defaultBall"
+                  data-mode={"default"}
+                  onClick={(e) => handleChangeTheme(e)}
+                ></div>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                src={mode == "white" ? shareBlack : share}
+                alt=""
+                onClick={handleCopy}
+              />
+              <img src={qr} alt="" />
+            </div>
+          </div>
+          <div className="part-2">
+            <div className="rate">
+              <img src={star} alt="" />
+              <p>{card?.rate || "4.5"}</p>
+            </div>
+            {forPreview ? (
+              <button>{t("Follow")}</button>
+            ) : (
+              <button onClick={() => navigate(`/Edit_Card/${card.id}`)}>
+                {t("Edit")}
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="links">
+          {socialLinks &&
+            socialLinks.map(({ platform, link }) => {
+              const iconElement = socialIcons[platform];
+              return (
+                <a
+                  href={link}
+                  key={platform}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {iconElement && iconElement}
+                </a>
+              );
+            })}
+        </div>
+        <div className="about">
+          <h1>{t("About me")}</h1>
+          <p>{card?.about}</p>
+        </div>
+        <div className="gallery">
+          <h1>{t("Gallery")}</h1>
+          <Swiper
+            watchSlidesProgress={true}
+            pagination={{
+              clickable: true,
+            }}
+            grabCursor={true}
+            autoplay={true}
+            loopFillGroupWithBlank={true}
+            breakpoints={{
+              140: {
+                slidesPerView: 1.2,
+                spaceBetween: 10,
+              },
+              640: {
+                slidesPerView: 1.6,
+                spaceBetween: 10,
+              },
+              1030: {
+                slidesPerView: 2.5,
+                spaceBetween: 10,
+              },
+            }}
+            loop={true}
+            spaceBetween={40}
+            modules={[Autoplay, Pagination]}
+          >
+            {card?.gallery?.map((src, i) => {
+              return (
+                <SwiperSlide key={i}>
+                  <img src={src} alt="" />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </div>
+      </div>
+      <img src={shape} alt="" className="shape" />
+    </div>
+  );
+}
+
+export default CardProfile;

@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Service
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # pgAdmin Service (Optional)
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: elhosinymarwan29@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: "0162105511"
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Express.js App Service
+  app:
+    image: marwanelhosiny/jaleros-platform:latest
+    environment:
+      DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - media-files:/usr/src/app/uploads
+    command: ["/bin/sh", "-c", "npx prisma migrate deploy && npm start"]
+
+volumes:
+  postgres-data:
+  media-files:
+
+
+networks:
+  app-network:

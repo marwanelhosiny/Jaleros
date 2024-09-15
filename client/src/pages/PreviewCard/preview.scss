@@ -1,0 +1,18 @@
+
+
+.preview{
+    width: 100%;
+    min-height: 100vh;
+    background-color: #999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0px;
+    .cardBasic , .cardProfile{
+        z-index: 800;
+        width: 400px;
+        @media screen and (max-width : 768px) {
+            width: 340px;
+        }
+    }
+}
