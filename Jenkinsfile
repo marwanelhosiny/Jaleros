@@ -92,28 +92,26 @@ pipeline {
 
         stage('Deploy to Server') {
             steps {
-                echo "Deploying both Backend and Frontend Docker images via SSH..."
+                echo "Deploying app via SSH..."
                 script {
-                    sshagent([SSH_CREDENTIALS_ID]) {
-                        sh """
-                            set -x
-                            # Copy docker-compose file to the server
-                            scp ${DOCKER_COMPOSE_PATH} ${SSH_SERVER}:/home/appuser/myApp/docker-compose.yml
-
-                            # Create and upload the deploy script
-                            echo '#!/bin/bash
-                            export DOCKER_USERNAME="${DOCKER_USERNAME}"
-                            export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
-                            echo \$DOCKER_PASSWORD | docker login -u \"\$DOCKER_USERNAME\" --password-stdin
-                            cd /home/appuser/myApp
-                            docker-compose pull
-                            docker-compose up -d
-                            docker logout' > ${DEPLOY_SCRIPT_PATH}
-
-                            chmod +x ${DEPLOY_SCRIPT_PATH}
-                            scp ${DEPLOY_SCRIPT_PATH} ${SSH_SERVER}:/home/appuser/myApp/
-                            ssh ${SSH_SERVER} 'bash /home/appuser/myApp/deploy.sh'
-                        """
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sshagent([SSH_CREDENTIALS_ID]) {
+                            sh """
+                                set -x
+                                scp ${DOCKER_COMPOSE_PATH} ${SSH_SERVER}:/home/appuser/myApp/docker-compose.yml
+                                echo '#!/bin/bash
+                                export DOCKER_USERNAME="${DOCKER_USERNAME}"
+                                export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
+                                echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                                cd /home/appuser/myApp
+                                docker-compose pull
+                                docker-compose up -d
+                                docker logout' > ${DEPLOY_SCRIPT_PATH}
+                                chmod +x ${DEPLOY_SCRIPT_PATH}
+                                scp ${DEPLOY_SCRIPT_PATH} ${SSH_SERVER}:/home/appuser/myApp/
+                                ssh ${SSH_SERVER} 'bash /home/appuser/myApp/deploy.sh'
+                            """
+                        }
                     }
                 }
             }
