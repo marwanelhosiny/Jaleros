@@ -66,7 +66,7 @@ function CardProfile({ card, forPreview = false }) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        `http://localhost:3500/previewCard/${card.id}`
+        `https://jaleros.com/previewCard/${card.id}`
       );
       toast({
         isClosable: true,
