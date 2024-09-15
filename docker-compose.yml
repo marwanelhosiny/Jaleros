@@ -46,11 +46,14 @@ services:
 
   # React Frontend Service
   frontend:
-    image: marwanelhosiny/jaleros-client:latest # Frontend image from Docker Hub
+    image: marwanelhosiny/jaleros-client
+    volumes:
+      - /home/appuser/.acme.sh/jaleros.com_ecc:/home/appuser/.acme.sh/jaleros.com_ecc
     ports:
-      - "3500:80"
+      - "80:80"
+      - "443:443"
     networks:
-      - app-network
+      - app-network  
 
 volumes:
   postgres-data:
