@@ -17,6 +17,7 @@ import google from "../../assets/images/google.png";
 
 function SignLogin({
   operation,
+  setOperation ,
   flagOpen,
   closeModal,
   onClickLogin,
@@ -46,8 +47,8 @@ function SignLogin({
         <ModalCloseButton />
         <ModalBody>
           <div className="operation">
-            <p className={operation == "log" && "active"}>{t("Login")}</p>
-            <p className={operation == "sign" && "active"}>{t("Register")}</p>
+            <p onClick={()=> setOperation("log")} className={operation == "log" && "active"}>{t("Login")}</p>
+            <p onClick={()=> setOperation("sign")} className={operation == "sign" && "active"}>{t("Register")}</p>
           </div>
           <Auth needForce={true}>
             {operation == "sign" && (

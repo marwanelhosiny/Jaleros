@@ -31,6 +31,7 @@ import share3 from "../../assets/images/Pricing/box-3/share-line.png";
 import map_2 from "../../assets/images/Pricing/box-3/map-3.png";
 // box-3
 import { Link, useNavigate } from "react-router-dom";
+import { useGlarusContext } from "../../Context/Glarus_Context";
 
 function Pricing() {
   const [checked, setChecked] = useState(false);
@@ -38,7 +39,9 @@ function Pricing() {
     type: "0",
     confirm: false,
   });
+  const { LoginFirstHandler } = useGlarusContext();
   const navigate = useNavigate();
+  const { token } = localStorage;
   return (
     <div className="pricing">
       <div className="container">
@@ -83,7 +86,14 @@ function Pricing() {
               </div>
             </div>
             {!hasCard.confirm ? (
-              <button onClick={() => navigate("/Create_card")}>{t("Create a free account")}</button>
+              <button
+                className="create"
+                onClick={() =>
+                  LoginFirstHandler({ token, navigate, path: "/Create_Card" })
+                }
+              >
+                {t("Create Free Account")}
+              </button>
             ) : (
               <button>{t("Your Cuurent Plan")}</button>
             )}

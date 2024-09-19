@@ -43,6 +43,7 @@ function PreviewCard() {
   }, []);
   return (
     <div className="preview">
+      <div className="preview_background"></div>
       {card && card.type == "basic" ? (
         <BasicCard card={card} forPreview={true} />
       ) : (

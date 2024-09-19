@@ -30,8 +30,9 @@ import BasicCard from "../../components/BasicCard/BasicCard";
 function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
-  const { loading, setLoading } = useGlarusContext();
+  const { loading, setLoading, LoginFirstHandler } = useGlarusContext();
   const navigate = useNavigate();
+  const { token } = localStorage;
   const [open, setOpen] = useState({
     one: false,
     two: false,
@@ -100,7 +101,12 @@ function Home() {
               "Enables users to create digital cards containing all their social media data, with the ability to Add a short profile. The goal of the platform is to facilitate the presentation of personal and professional information in an attractive and accessible manner."
             )}
           </p>
-          <button className="create" onClick={() => navigate("/Create_Card")}>
+          <button
+            className="create"
+            onClick={() =>
+              LoginFirstHandler({ token, navigate, path: "/Create_Card" })
+            }
+          >
             {t("Create Now")}
           </button>
           <div className="search">

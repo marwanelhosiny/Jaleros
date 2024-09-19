@@ -12,7 +12,7 @@ import star from "../../assets/images/Pricing/Star.png";
 import qr from "../../assets/images/Pricing/qrcode.png";
 import shape from "../../assets/images/card/Vector.png";
 import { t } from "i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -110,7 +110,7 @@ function CardProfile({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <h1>{card?.name || "Jemy"}</h1>
+            <Link target="blank" to={`https://jaleros.com/previewCard/${card?.id}`}>{card?.name || "Jemy"}</Link>
               <h3>{card?.role || "FullStack Developer"}</h3>
               <h3 className="location">
                 <i className="fa-solid fa-location-dot"></i>{" "}
@@ -120,7 +120,7 @@ function CardProfile({ card, forPreview = false }) {
                 <a
                   href={card?.storeLink}
                   target="blank"
-                  className={mode == "white" && "white"}
+                  className={`${mode == "white" && "white"} store`}
                 >
                   <img src={mode == "white" ? linkBlack : link} alt="" />
                 </a>

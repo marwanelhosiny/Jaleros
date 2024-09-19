@@ -8,12 +8,7 @@ export const generateUniqueString = ({
   return nanoid();
 };
 
-export const getUser = () => {
-  const { user } = localStorage;
-  if (user) {
-    const data = JSON.parse(localStorage?.user);
-    return data;
-  } else {
-    return "No Data";
-  }
-};
+
+
+
+

@@ -371,7 +371,7 @@ function Header() {
 
         <div className="smallHeader">
           <div className="item">
-            <img src={logo} alt="" />
+            <img src={logo} alt="" onClick={()=> navigate("/")} className="logo" style={{cursor : "pointer"}}/>
             {token && (
               <div className="profile two">
                 <h3>{t("Welcome Home")}</h3>
@@ -499,6 +499,7 @@ function Header() {
         </div>
         <SignLogin
           operation={operation}
+          setOperation={setOperation}
           flagOpen={isModalAuthOpen}
           closeModal={closeModalAuth}
           handleChangeInput={handleChangeInput}

@@ -129,6 +129,8 @@ body.ar {
       font-weight: 700;
       text-transform: uppercase;
       transform: translateY(4px);
+      cursor: pointer;
+      transition: 0.3s linear;
       &.active {
         background-color: #233545;
         color: white;

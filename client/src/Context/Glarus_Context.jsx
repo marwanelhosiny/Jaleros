@@ -1,9 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import apiAxios from "../utils/apiAxios";
+import { useToast } from "@chakra-ui/react";
+import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
 
 const GlarusContext = createContext();
 
 export const GlarusProvider = ({ children }) => {
+  const toast = useToast();
+
   // user Info
   const [user, setUser] = useState([]);
   // user Info
@@ -40,6 +45,20 @@ export const GlarusProvider = ({ children }) => {
     })();
   }, []);
 
+  // loginFirstHandler
+  const LoginFirstHandler = ({ token , navigate  , path}) => {
+    if (!token)
+      return toast({
+        isClosable: true,
+        position: "top",
+        status: "info",
+        duration: 3000,
+        title: t("Login First"),
+      });
+    return navigate(path);
+  };
+  // loginFirstHandler
+
   useEffect(() => {
     if (loading) {
       document.body.style.overflow = "hidden";
@@ -59,6 +78,7 @@ export const GlarusProvider = ({ children }) => {
         setNotifications,
         loading,
         setLoading,
+        LoginFirstHandler,
 
         // modal auth
         operation,

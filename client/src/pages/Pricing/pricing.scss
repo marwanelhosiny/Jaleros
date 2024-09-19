@@ -134,7 +134,7 @@ body.ar {
             align-items: center;
             gap: 10px;
             img{
-                z-index: 1000;
+                z-index: 600;
             }
             .rate {
               display: flex;
@@ -172,7 +172,7 @@ body.ar {
             position: absolute;
             right: 20px;
             bottom: 10px;
-            z-index: 1000;
+            z-index: 400;
           }
           .qr {
             position: absolute;

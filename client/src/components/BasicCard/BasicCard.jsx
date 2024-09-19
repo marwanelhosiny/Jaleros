@@ -6,7 +6,7 @@ import share from "../../assets/images/Pricing/box-2/share.png";
 import shareBlack from "../../assets/images/shareBlack.png";
 import shape from "../../assets/images/card/Vector.png";
 import { t } from "i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -96,7 +96,7 @@ function BasicCard({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <h1>{card?.name || "Jemy"}</h1>
+              <Link target="blank" to={`https://jaleros.com/previewCard/${card.id}`}>{card?.name || "Jemy"}</Link>
               <h3>{card?.role || "FullStack Developer"}</h3>
             </div>
           </div>

@@ -6,14 +6,15 @@ const baseSrc =
 
 import star from "../../assets/images/Pricing/Star.png";
 import plusBall from "../../assets/images/PlusBall.png";
+import { Link } from "react-router-dom";
 
 function TopRatedBox({ card }) {
-
-    
   return (
     <div className="TopRatedBox">
       <div className="info">
-        <img src={baseSrc} alt="" />
+        <Link to={`https://jaleros.com/previewCard/${card.id}`}>
+          <img src={card?.profilePic || baseSrc} alt="" />
+        </Link>
         <div className="con">
           <h1>{card?.title || "Jemy"}</h1>
           <h3>{card?.role || "FullStack Developer"}</h3>

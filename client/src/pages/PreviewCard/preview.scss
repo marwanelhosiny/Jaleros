@@ -1,18 +1,33 @@
-
-
-.preview{
-    width: 100%;
-    min-height: 100vh;
-    background-color: #999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0px;
-    .cardBasic , .cardProfile{
-        z-index: 800;
-        width: 400px;
-        @media screen and (max-width : 768px) {
-            width: 340px;
-        }
+.preview {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  .preview_background {
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    width: calc(100% + 28px);
+    height: calc(100% + 28px);
+    background-size: cover;
+    background-position:center;
+    background-image: url("../../assets/images/About.png");
+    filter: blur(10px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .cardBasic,
+  .cardProfile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 400px;
+    @media screen and (max-width: 768px) {
+      width: 340px;
     }
+  }
 }
