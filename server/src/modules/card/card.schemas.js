@@ -55,6 +55,6 @@ export const updateCardSchema = {
 
 export const singleCardSchema = {
     params: Joi.object({
-        cardId: Joi.string(),
+        username: Joi.string(),
     }),
 }
