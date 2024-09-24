@@ -22,7 +22,7 @@ export const createCard = async (req, res, next) => {
         // Destructure input fields from the request body
         const { name, country, city, location, about, phoneNumber, email } = req.body;
         const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest, custom1, custom2, custom3 } = req.body;
-        const { id: userId } = req.authUser;
+        const { id: userId , username } = req.authUser;
 
         // Handle file uploads
         const profilePicDocFile = req.files['profilePic'] ? req.files['profilePic'][0] : null;
@@ -33,7 +33,7 @@ export const createCard = async (req, res, next) => {
         // Create a new card in the database
         const card = await prisma.card.create({
             data: {
-                userId,
+                username,
                 name,
                 email,
                 country,
@@ -161,7 +161,7 @@ export const updateCard = async (req, res, next) => {
     // Destructuring entries from the request body
         const { name, country, city, location, about, phoneNumber, email, removeGalleryPics = [] } = req.body;
         const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest, custom1, custom2, custom3 } = req.body;
-        const { id: userId } = req.authUser;
+        const { id: userId , username } = req.authUser;
         const { cardId } = req.params;
 
         // Handle file uploads
@@ -171,7 +171,7 @@ export const updateCard = async (req, res, next) => {
         const galleryDocFiles = req.files['gallery'] || [];
 
         // Find the card
-        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), userId } });
+        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), username } });
         if (!card) {
             return res.status(404).json({ message: 'Card not found' });
         }
@@ -299,7 +299,7 @@ export const updateCard = async (req, res, next) => {
             message: 'Card updated successfully',
             card: {
                 id: updatedCard.id,
-                userId: updatedCard.userId,
+                username: updatedCard.username,
                 name: updatedCard.name,
                 email: updatedCard.email,
                 phoneNumber: updatedCard.phoneNumber,
@@ -325,11 +325,11 @@ export const updateCard = async (req, res, next) => {
 //============================================== delete card ==========================================//
 
 export const deleteCard = async (req, res, next) => {
-        const { id: userId } = req.authUser;
+        const { id: userId , username} = req.authUser;
         const { cardId } = req.params;
 
         // Find the card
-        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), userId } });
+        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), username } });
         if (!card) {
             return res.status(404).json({ message: 'Card not found' });
         }
@@ -379,7 +379,6 @@ export const getCards = async (req, res, next) => {
         const { page = 1, limit = 6 } = req.query; // Default pagination values
         const { name, country, city } = req.body;
 
-        console.log(country);
 
         // find cards with case-insensitive filtering for country, city, and name, sorted by rate
         const cards = await prisma.card.findMany({
@@ -441,14 +440,9 @@ export const getCardById = async (req, res, next) => {
     
     const { username } = req.params
 
-    //find user
-    const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
 
     // find card
-    const card = await prisma.card.findUnique({ where: { userId : user.id }  , include:{social:true}});
+    const card = await prisma.card.findUnique({ where: { username }  , include:{social:true}});
     if (!card) {
         return res.status(404).json({ message: 'Card not found' });
     }
@@ -461,10 +455,10 @@ export const getCardById = async (req, res, next) => {
 
 export const getMyCards = async (req, res, next) => {
     
-    const { id :userId } = req.authUser
+    const { username } = req.authUser
 
     // find cards
-    const cards = await prisma.card.findMany({ where: { userId } , include:{social:true }});
+    const cards = await prisma.card.findMany({ where: { username } , include:{social:true }});
     
     res.status(200).json({ message: 'Cards fetched successfully', cards });
 
