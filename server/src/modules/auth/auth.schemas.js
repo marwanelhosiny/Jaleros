@@ -5,6 +5,7 @@ import { objectidValidation } from "../../utils/idValidator.js";
 export const signupSchema = {
     body: Joi.object({
         fullName: Joi.string().min(3).max(30).required(),
+        username: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).max(20).required(),
 
