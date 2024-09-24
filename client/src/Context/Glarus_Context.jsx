@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import apiAxios from "../utils/apiAxios";
 import { useToast } from "@chakra-ui/react";
 import { t } from "i18next";
-import { useNavigate } from "react-router-dom";
 
 const GlarusContext = createContext();
 
@@ -37,16 +36,32 @@ export const GlarusProvider = ({ children }) => {
     if (!token) return;
     (async () => {
       setLoading(true);
-      const { data } = await apiAxios.get("user", {
-        headers: { accesstoken: token },
-      });
-      setUser(data?.userData);
+      try {
+        const { data } = await apiAxios.get("user", {
+          headers: { accesstoken: token },
+        });
+        setUser(data?.userData);
+      } catch (e) {
+        const { message } = e?.response?.data;
+        if (message == "authentication error :jwt expired") {
+          toast({
+            isClosable: true,
+            position: "top",
+            status: "info",
+            duration: 3000,
+            title: t("Please login Again"),
+          });
+          setOperation("log");
+          setModalAuthOpen(true);
+          localStorage.removeItem("token")
+        }
+      }
       setLoading(false);
     })();
   }, []);
 
   // loginFirstHandler
-  const LoginFirstHandler = ({ token , navigate  , path}) => {
+  const LoginFirstHandler = ({ token, navigate, path }) => {
     if (!token)
       return toast({
         isClosable: true,

@@ -30,6 +30,7 @@ import BasicCard from "../../components/BasicCard/BasicCard";
 function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
+  const [page, setPage] = useState("1");
   const { loading, setLoading, LoginFirstHandler } = useGlarusContext();
   const navigate = useNavigate();
   const { token } = localStorage;
@@ -55,13 +56,12 @@ function Home() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await apiAxios.get("/card");
-      setSponserdCards(
-        data.cards.filter((card) => {
-          return card.id == 29 || card.id == 13 || card.id == 43;
-        })
+      const { data } = await apiAxios.get("card/sponsored");
+      setSponserdCards(data?.cards);
+      const { data: Arr } = await apiAxios.get(
+        `card/?limit=6&page=${page || "1"}`
       );
-      setCards(data.cards.slice(-6));
+      setCards(Arr?.cards);
       setLoading(false);
     })();
   }, []);
@@ -70,8 +70,8 @@ function Home() {
     <div className="home">
       <div className="container">
         <div className="main">
-          <div className="box ">
-            <h1 className="">
+          <div className="box">
+            <h1>
               {t(
                 "An innovative digital platform that enables users to create digital cards"
               )}
@@ -111,37 +111,40 @@ function Home() {
           </button>
           <div className="search">
             <img src={search} alt="" />
-            <input
-              type="text"
-              placeholder={t("Search By City , Name , Category")}
-            />
+            <input type="text" placeholder={t("Search By Name")} />
           </div>
         </div>
         <div className="sponserd">
-          <h1>{t("Sponsored ")}</h1>
-          <div className="grid">
-            {sponserdCards &&
-              sponserdCards.map((card) => {
-                return card.type == "basic" ? (
+          <h1>{t("Sponsored")}</h1>
+          {sponserdCards.length ? (
+            <div className="gird">
+              {sponserdCards.map((card) => {
+                return card?.type == "basic" ? (
                   <BasicCard card={card} forPreview={true} />
                 ) : (
                   <CardProfile card={card} forPreview={true} />
                 );
               })}
-          </div>
+            </div>
+          ) : (
+            <div className="msg">{t("No sponserd Cards Yet")}</div>
+          )}
         </div>
         <div className="topRated">
           <h1>{t("Top Rated")}</h1>
-          <p>{t("Meet the skilled and experienced users ")}</p>
-          <div className="grid">
-            {Cards &&
-              Cards.map((card) => {
+          <p>{t("Meet the skilled and experienced users")}</p>
+          {Cards.length ? (
+            <div className="grid">
+              {Cards.map((card) => {
                 return <TopRatedBox card={card} key={card.id} />;
               })}
-          </div>
+            </div>
+          ) : (
+            <div className="msg">{t("No Cards Yet")}</div>
+          )}
         </div>
         <div className="process">
-          <h1>{t("Our Working Process ")}</h1>
+          <h1>{t("Our Working Process")}</h1>
           <p>{t("Step-by-Step Guide to Create your digital card")}</p>
           <div className="toggle">
             <div className={`item ${open?.one && "active"}`}>
@@ -272,8 +275,7 @@ function Home() {
             <div className="box backGround">
               <div className="flexer">
                 <div className="con">
-                  <h3>{t("Create comprehensive")}</h3>
-                  <p>{t("digital cards")}</p>
+                  <h3>{t("Create comprehensive digital cards")}</h3>
                 </div>
                 <img src={service1} alt="" />
               </div>
@@ -285,8 +287,7 @@ function Home() {
             <div className="box">
               <div className="flexer">
                 <div className="con">
-                  <h3>{t("Visibility ")}</h3>
-                  <p>{t("Enhancement")}</p>
+                  <h3>{t("Visibility Enhancement")}</h3>
                 </div>
                 <img src={service2} alt="" />
               </div>
@@ -298,8 +299,7 @@ function Home() {
             <div className="box ">
               <div className="flexer">
                 <div className="con">
-                  <h3>{t("Business rating")}</h3>
-                  <p>{t("system")}</p>
+                  <h3>{t("Business rating system")}</h3>
                 </div>
                 <img src={service3} alt="" />
               </div>
@@ -311,8 +311,7 @@ function Home() {
             <div className="box backGround">
               <div className="flexer">
                 <div className="con">
-                  <h3>{t("CV and ")}</h3>
-                  <p>{t("Portfolio")}</p>
+                  <h3>{t("CV and Portfolio")}</h3>
                 </div>
                 <img src={service4} alt="" />
               </div>
@@ -324,8 +323,7 @@ function Home() {
             <div className="box">
               <div className="flexer">
                 <div className="con">
-                  <h3 className="fade">{t("Technical ")}</h3>
-                  <p className="fade">{t("Support")}</p>
+                  <h3 className="fade">{t("Technical Support")}</h3>
                 </div>
                 <img src={service5} alt="" />
               </div>
@@ -337,8 +335,7 @@ function Home() {
             <div className="box">
               <div className="flexer">
                 <div className="con">
-                  <h3 className="fade">{t("Analytics and")}</h3>
-                  <p className="fade">{t("Tracking")}</p>
+                  <h3 className="fade">{t("Analytics and Tracking")}</h3>
                 </div>
                 <img src={service6} alt="" />
               </div>

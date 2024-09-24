@@ -14,27 +14,20 @@ const chakraBreakPoints = {
 };
 
 function App() {
-  // set default lang
-  const { lang, modeCard } = localStorage;
+  // set default lang and mode 
+  const { lang, modeCard, direction } = localStorage;
   useEffect(() => {
-    if (lang == "en") {
-      i18n.changeLanguage("en");
-      document.body.style.direction = "ltr";
-      localStorage.direction = "ltr";
-      localStorage.lang = "en";
-      document.body.classList.add("en");
-    } else if (lang == "ar") {
-      i18n.changeLanguage("ar");
-      document.body.style.direction = "rtl";
-      localStorage.direction = "rtl";
-      localStorage.lang = "ar";
-      document.body.classList.add("ar");
+    if (lang && direction) {
+      i18n.changeLanguage(lang);
+      document.body.style.direction = direction;
+      document.body.classList.add(lang);
     } else {
       localStorage.lang = "en";
+      localStorage.direction = "ltr";
     }
     if (!modeCard) localStorage.modeCard = "default";
   }, []);
-  // set default lang
+  // set default lang and mode
   return <RouterProvider router={routes} />;
 }
 

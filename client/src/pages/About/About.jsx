@@ -37,28 +37,28 @@ function About() {
             <div className="box">
               <img src={img} alt="" />
               <div className="con">
-                <h3>10.5k</h3>
+                <h3>10.5 {t("K")}</h3>
                 <p>{t("Sallers active our site")}</p>
               </div>
             </div>
             <div className="box">
               <img src={img2} alt="" />
               <div className="con">
-                <h3>33k</h3>
+                <h3>33 {t("K")}</h3>
                 <p>{t("Mopnthly Product Sale")}</p>
               </div>
             </div>
             <div className="box">
               <img src={img3} alt="" />
               <div className="con">
-                <h3>45.5k</h3>
+                <h3>45.5 {t("K")}</h3>
                 <p>{t("Customer active in our site")}</p>
               </div>
             </div>
             <div className="box">
               <img src={img4} alt="" />
               <div className="con">
-                <h3>25k</h3>
+                <h3>25 {t("K")}</h3>
                 <p>{t("Anual gross sale in our site")}</p>
               </div>
             </div>

@@ -21,8 +21,8 @@ function Footer() {
           </div>
           <div className="part2">
             <h1>{t("Company")}</h1>
-            <Link to={"/about"}>{t("About us")}</Link>
-            <Link to={"/contact"}>{t("Contact us")}</Link>
+            <Link to={"/about"}>{t("About Us")}</Link>
+            <Link to={"/contact"}>{t("Contact Us")}</Link>
             <Link to={"/FAQ"}>{t("FAQ")}</Link>
           </div>
           <div className="smallShow">

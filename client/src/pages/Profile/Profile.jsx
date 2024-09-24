@@ -28,13 +28,14 @@ function Profile() {
       setMyCards(data.cards);
       setLoading(false);
     })();
+    if(!token) navigate("/")
   }, []);
 
   if (myCards?.length < 1 && !wait)
     return (
       <div className="profilePage">
         <div className="NoCards">
-          <h1>{t("You Didnot Have Cards Yet")}</h1>
+          <h1>{t("You Did not Have Cards Yet")}</h1>
           <Link to={"/Create_Card"}>{t("Create Now")}</Link>
         </div>
       </div>

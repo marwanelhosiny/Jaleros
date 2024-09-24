@@ -17,7 +17,7 @@ import google from "../../assets/images/google.png";
 
 function SignLogin({
   operation,
-  setOperation ,
+  setOperation,
   flagOpen,
   closeModal,
   onClickLogin,
@@ -32,7 +32,7 @@ function SignLogin({
     <Modal
       isOpen={flagOpen}
       onClose={closeModal}
-      size={"lg"}
+      size={"xl"}
       isCentered
       scrollBehavior="outside"
     >
@@ -47,47 +47,72 @@ function SignLogin({
         <ModalCloseButton />
         <ModalBody>
           <div className="operation">
-            <p onClick={()=> setOperation("log")} className={operation == "log" && "active"}>{t("Login")}</p>
-            <p onClick={()=> setOperation("sign")} className={operation == "sign" && "active"}>{t("Register")}</p>
+            <p
+              onClick={() => setOperation("log")}
+              className={operation == "log" && "active"}
+            >
+              {t("Login")}
+            </p>
+            <p
+              onClick={() => setOperation("sign")}
+              className={operation == "sign" && "active"}
+            >
+              {t("Register")}
+            </p>
           </div>
-          <Auth needForce={true}>
-            {operation == "sign" && (
+          <Auth>
+            <div className="flex_auth">
+              {operation == "sign" && (
+                <StackForm
+                  stackType={"input"}
+                  label={t("Full name")}
+                  placeholderInput={t("Eter your name")}
+                  idInput={"fullName"}
+                  onChangeInput={handleChangeInput}
+                  error={operation == "log" ? errorLogin : errorRegister}
+                />
+              )}
+              {operation == "sign" && (
+                <StackForm
+                  stackType={"input"}
+                  label={t("username")}
+                  placeholderInput={t("Enter your username")}
+                  idInput={"username"}
+                  onChangeInput={handleChangeInput}
+                  error={operation == "log" ? errorLogin : errorRegister}
+                />
+              )}
               <StackForm
                 stackType={"input"}
-                label={t("Full name")}
-                placeholderInput={t("Please enter your name")}
-                idInput={"fullName"}
+                label={t("Email")}
+                placeholderInput={t("Enter your email")}
+                idInput={"email"}
                 onChangeInput={handleChangeInput}
+                needForce
                 error={operation == "log" ? errorLogin : errorRegister}
               />
+              <StackForm
+                stackType={"input"}
+                typeInput={show ? "text" : "password"}
+                label={t("Password")}
+                placeholderInput={t("Enter Password")}
+                src={eye}
+                onclickIcon={onclickIcon}
+                onChangeInput={handleChangeInput}
+                idInput={"password"}
+                error={operation == "log" ? errorLogin : errorRegister}
+              />
+            </div>
+            {operation == "log" && (
+              <p className="forget">{t("Forget Password?")}</p>
             )}
-            <StackForm
-              stackType={"input"}
-              label={t("Email Address")}
-              placeholderInput={t("Enter your email address or phone number")}
-              idInput={"email"}
-              onChangeInput={handleChangeInput}
-              error={operation == "log" ? errorLogin : errorRegister}
-            />
-            <StackForm
-              stackType={"input"}
-              typeInput={show ? "text" : "password"}
-              label={t("Password")}
-              placeholderInput={t("Enter Password")}
-              src={eye}
-              onclickIcon={onclickIcon}
-              onChangeInput={handleChangeInput}
-              idInput={"password"}
-              error={operation == "log" ? errorLogin : errorRegister}
-            />
-            <p className="forget">{t("Forget Password?")}</p>
             {operation == "sign" ? (
               <button onClick={onClickSignUp} className="create">
                 {t("Create Account")}
               </button>
             ) : (
               <button onClick={onClickLogin} className="log">
-                {t("Log In")}
+                {t("Log in")}
               </button>
             )}
             <div className="another">
@@ -101,7 +126,7 @@ function SignLogin({
                 <button>
                   {" "}
                   <img src={facebook} alt="" />{" "}
-                  <p>{t("Continue with Facbooks")}</p>
+                  <p>{t("Continue with Facebook")}</p>
                 </button>
               </div>
             </div>

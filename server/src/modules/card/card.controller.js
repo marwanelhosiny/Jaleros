@@ -1,6 +1,4 @@
 import prisma from "../../../DB/prisma.js";
-import { cloudinaryConnection } from "../../utils/cloudinary.js";
-import { extractPublicId } from "../../utils/cloudinary.js";
 import path from 'path';
 import fs from 'fs';
 import generateUniequeString from "../../utils/generateUniqueString.js";
@@ -20,8 +18,8 @@ const generateFileUrl = (req, filePath) => {
 
 export const createCard = async (req, res, next) => {
         // Destructure input fields from the request body
-        const { name, country, city, location, about, phoneNumber, email } = req.body;
-        const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest, custom1, custom2, custom3 } = req.body;
+        const { name, country, city, location, about, phoneNumber, email ,role ,category} = req.body;
+        const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest,storeLink, custom1, custom2, custom3 } = req.body;
         const { id: userId , username } = req.authUser;
 
         // Handle file uploads
@@ -40,6 +38,8 @@ export const createCard = async (req, res, next) => {
                 city,
                 location,
                 about,
+                role,
+                category,
                 phoneNumber,
                 rate: 0,
                 profilePic: '',
@@ -66,6 +66,7 @@ export const createCard = async (req, res, next) => {
                 telegram,
                 reddit,
                 pinterest,
+                storeLink,
                 custom1,
                 custom2,
                 custom3,
@@ -159,8 +160,8 @@ export const createCard = async (req, res, next) => {
 export const updateCard = async (req, res, next) => {
 
     // Destructuring entries from the request body
-        const { name, country, city, location, about, phoneNumber, email, removeGalleryPics = [] } = req.body;
-        const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest, custom1, custom2, custom3 } = req.body;
+        const { name, country, city, location, about, phoneNumber, email, removeGalleryPics = [] ,role , category } = req.body;
+        const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest,storeLink, custom1, custom2, custom3 } = req.body;
         const { id: userId , username } = req.authUser;
         const { cardId } = req.params;
 
@@ -264,6 +265,8 @@ export const updateCard = async (req, res, next) => {
             city: city || card.city,
             location: location || card.location,
             about: about || card.about,
+            role: role || card.role,
+            category: category || card.category,
             phoneNumber: phoneNumber || card.phoneNumber,
             profilePic: profilePicUrl,
             coverPic: coverPicUrl,
@@ -289,6 +292,7 @@ export const updateCard = async (req, res, next) => {
                 telegram,
                 reddit,
                 pinterest,
+                storeLink,
                 custom1,
                 custom2,
                 custom3,
@@ -307,6 +311,8 @@ export const updateCard = async (req, res, next) => {
                 city: updatedCard.city,
                 location: updatedCard.location,
                 about: updatedCard.about,
+                role: updatedCard.role,
+                category: updatedCard.category,
                 profilePic: updatedCard.profilePic,
                 coverPic: updatedCard.coverPic,
                 gallery: updatedCard.gallery,

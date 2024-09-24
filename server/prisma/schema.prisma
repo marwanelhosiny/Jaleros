@@ -71,6 +71,8 @@ model Card {
   city        String?
   location    String?
   about       String?
+  role      String?
+  category    String?
   profilePic  String?
   coverPic    String?
   gallery     String[]
@@ -109,6 +111,7 @@ model Social {
   telegram   String?
   reddit     String?
   pinterest  String?
+  storeLink  String?
   custom1    String?
   custom2    String?
   custom3    String?

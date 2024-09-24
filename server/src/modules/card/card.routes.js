@@ -3,7 +3,7 @@ import * as cc from "./card.controller.js"
 import expressAsyncHandler from "express-async-handler";
 import { validationFunction } from "../../middlewares/validation.middleware.js";
 import { multermiddleLocal } from "../../middlewares/multerMiddleware.js"
-import { createCardSchema, singleCardSchema, updateCardSchema } from "./card.schemas.js";
+import { createCardSchema, deleteCardSchema, getCardSchema, updateCardSchema } from "./card.schemas.js";
 import { auth } from "../../middlewares/auth.middleware.js";
 import { allowedExtensions } from "../../utils/allowedExtensions.js";
 
@@ -26,10 +26,10 @@ router.put('/:cardId', multermiddleLocal(allowedExtensions.Image).fields([
 
 router.get('/sponsored',  expressAsyncHandler(cc.sponsoredCards))
 router.get('/myCards', auth(), expressAsyncHandler(cc.getMyCards))
-router.get('/:username', validationFunction(singleCardSchema) , expressAsyncHandler(cc.getCardById))
+router.get('/:username', validationFunction(getCardSchema) , expressAsyncHandler(cc.getCardById))
 router.get('/',  expressAsyncHandler(cc.getCards))
 
-router.delete('/:cardId', validationFunction(singleCardSchema) ,auth(), expressAsyncHandler(cc.deleteCard))
+router.delete('/:cardId', validationFunction(deleteCardSchema) ,auth(), expressAsyncHandler(cc.deleteCard))
 
 
 

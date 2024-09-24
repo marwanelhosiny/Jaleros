@@ -17,13 +17,42 @@ import "react-phone-input-2/lib/style.css";
 import apiAxios from "../../utils/apiAxios";
 import { useParams } from "react-router-dom";
 
-import axiosRetry from 'axios-retry';
-axiosRetry(apiAxios, { retries: 3 });
+const options = [
+  {
+    name: "Front End Developer",
+    value: "Front_End_Developer",
+  },
+  {
+    name: "Back End Developer",
+    value: "Back_End_Developer",
+  },
+  {
+    name: "Editor",
+    value: "Editor",
+  },
+  {
+    name: "Cars",
+    value: "Cars",
+  },
+  {
+    name: "Restaurants",
+    value: "Restaurants",
+  },
+  {
+    name: "Food",
+    value: "Food",
+  },
+  {
+    name: "communication",
+    value: "communication",
+  },
+];
 
 function AddEditCard({ typePage }) {
   const [gender, setGender] = useState("Male");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { id } = useParams();
+  const [oldGallery, setOldGallery] = useState([]);
+  const { userName , id } = useParams();
   const [pics, setPics] = useState({
     profilePic: "",
     coverPic: "",
@@ -33,6 +62,7 @@ function AddEditCard({ typePage }) {
     name: null,
     role: null,
     storeLink: null,
+    category: null,
     cv: null,
     portfolio: null,
     email: null,
@@ -70,7 +100,7 @@ function AddEditCard({ typePage }) {
       setLoading(true);
       const {
         data: { card },
-      } = await apiAxios.get(`card/${id}`);
+      } = await apiAxios.get(`card/${userName}`);
       setData((prev) => {
         return {
           ...prev,
@@ -78,6 +108,7 @@ function AddEditCard({ typePage }) {
           email: card?.email,
           about: card?.about,
           country: card?.country,
+          category: card?.category || "Front End Developer",
           city: card?.city,
           location: card?.location,
           X: card?.social?.X,
@@ -94,15 +125,16 @@ function AddEditCard({ typePage }) {
         };
       });
       setPhoneNumber(card?.phoneNumber);
-      const {gallery} = card
-      gallery.forEach((src , i)=> {
-        setGallery((prev)=> {
+      const { gallery } = card;
+      gallery?.forEach((src, i) => {
+        setGallery((prev) => {
           return {
             ...prev,
-            [`img${i+1}`] : {flag : true , src , base : null}
-          }
-        })
-      })
+            [`img${i + 1}`]: { flag: true, src, base: null },
+          };
+        });
+      });
+      setOldGallery(gallery);
     } catch (e) {}
     setLoading(false);
   };
@@ -163,23 +195,39 @@ function AddEditCard({ typePage }) {
         }
       }
       formData.append("phoneNumber", phoneNumber);
-      const { data: response } = await apiAxios.post("card", formData, {
+      await apiAxios.post("card", formData, {
         headers: { accesstoken: token },
       });
-      console.log(response);
       toast({
         isClosable: true,
         duration: 5000,
-        title: t(response.message),
+        title: t("Successful Operation"),
         position: "top",
-        status : 'success'
+        status: "success",
       });
     } catch (e) {}
     setLoading(false);
   };
 
+  const deleteCard = async () => {
+    try {
+      setLoading(true);
+      await apiAxios.delete(`card/${userName}`, { headers: { accesstoken: token } });
+      toast({
+        duration: 5000,
+        isClosable: true,
+        title: t("Successful Operation"),
+        status: "success",
+        position: "top",
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    id && getCard();
+    userName && getCard();
   }, []);
   return (
     <div className="AddEdit">
@@ -187,6 +235,7 @@ function AddEditCard({ typePage }) {
         <img src={AddEdit} alt="" />
       </div>
       <div className="container">
+        <h1 className="titleSection">{t("Simple, Easy and Fast")}</h1>
         <div className="textarea">
           <p>{t("Description")}</p>
           <textarea
@@ -210,15 +259,15 @@ function AddEditCard({ typePage }) {
             <StackForm
               stackType={"input"}
               idInput={"name"}
-              label={t("name")}
+              label={t("Full name")}
               valueInput={data.name}
-              placeholderInput={t("Enter name")}
+              placeholderInput={t("Full name")}
               onChangeInput={handleChange}
             />
             <StackForm
               stackType={"input"}
               idInput={"email"}
-              label={t("email")}
+              label={t("Email")}
               valueInput={data.email}
               placeholderInput={t("Email")}
               onChangeInput={handleChange}
@@ -257,6 +306,17 @@ function AddEditCard({ typePage }) {
               onChangeInput={handleMainPicsChange}
             />
             <StackForm
+              stackType={"select"}
+              idselect={"category"}
+              label={t("Category")}
+              onChangeSelect={handleChange}
+              options={options}
+              wantedForDisplay={"name"}
+              wantedForValue={"value"}
+              valueSelect={data.category}
+            />
+
+            <StackForm
               stackType={"input"}
               idInput={"cv"}
               label={t("cv")}
@@ -275,9 +335,9 @@ function AddEditCard({ typePage }) {
             <StackForm
               stackType={"input"}
               idInput={"storeLink"}
-              label={t("storeLink")}
+              label={t("store Link")}
               valueInput={data.storeLink}
-              placeholderInput={t("add your storeLink")}
+              placeholderInput={t("add your store Link")}
               onChangeInput={handleChange}
               icon={"fa-solid fa-shop"}
             />
@@ -355,33 +415,6 @@ function AddEditCard({ typePage }) {
             />
             <StackForm
               stackType={"input"}
-              idInput={"custom1"}
-              label={t("custom1")}
-              valueInput={data.custom1}
-              placeholderInput={t("add any link")}
-              onChangeInput={handleChange}
-              icon={"fa-brands fa-intercom"}
-            />
-            <StackForm
-              stackType={"input"}
-              idInput={"custom2"}
-              label={t("custom2")}
-              valueInput={data.custom2}
-              placeholderInput={t("add any link")}
-              onChangeInput={handleChange}
-              icon={"fa-brands fa-intercom"}
-            />
-            <StackForm
-              stackType={"input"}
-              idInput={"custom3"}
-              label={t("custom3")}
-              valueInput={data.custom3}
-              placeholderInput={t("add any link")}
-              onChangeInput={handleChange}
-              icon={"fa-brands fa-intercom"}
-            />
-            <StackForm
-              stackType={"input"}
               idInput={"country"}
               label={t("country")}
               valueInput={data.country}
@@ -397,15 +430,6 @@ function AddEditCard({ typePage }) {
               placeholderInput={t("add your city")}
               onChangeInput={handleChange}
               icon={"fa-solid fa-city"}
-            />
-            <StackForm
-              stackType={"input"}
-              idInput={"location"}
-              label={t("location")}
-              valueInput={data.location}
-              placeholderInput={t("add your location")}
-              onChangeInput={handleChange}
-              icon={"fa-solid fa-location-dot"}
             />
           </div>
           <div className="gallery">
@@ -629,10 +653,19 @@ function AddEditCard({ typePage }) {
           </div>
           {typePage == "Create" ? (
             <button className="button" onClick={handleCreateCard}>
-              {t("Create")}
+              {t("Create Now")}
             </button>
           ) : (
-            <button className="button">{t("Update")}</button>
+            <div className="btns">
+              <button className="button">{t("Update")}</button>
+              <button
+                className="button"
+                style={{ marginTop: "15px" }}
+                onClick={deleteCard}
+              >
+                {t("Delete")}
+              </button>
+            </div>
           )}
         </Auth>
       </div>

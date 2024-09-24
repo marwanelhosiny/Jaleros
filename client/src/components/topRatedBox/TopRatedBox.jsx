@@ -12,7 +12,7 @@ function TopRatedBox({ card }) {
   return (
     <div className="TopRatedBox">
       <div className="info">
-        <Link to={`https://jaleros.com/previewCard/${card.id}`}>
+        <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
           <img src={card?.profilePic || baseSrc} alt="" />
         </Link>
         <div className="con">

@@ -88,7 +88,7 @@ export const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/Edit_Card/:id",
+        path: "/Edit_Card/:userName/:id",
         element: (
           <Suspense fallback={<Loader />}>
             <AddEditCard typePage={"Edit"} />
@@ -98,7 +98,7 @@ export const routes = createBrowserRouter([
     ],
   },
   {
-    path: "/previewCard/:id",
+    path: "/:userName",
     element: (
       <Suspense fallback={<Loader />}>
         <PreviewCard />

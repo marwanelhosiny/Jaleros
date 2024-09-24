@@ -15,7 +15,6 @@
       transition: 0.4s allow-discrete;
       transform: scale(0);
       display: none;
-
       &.active {
         display: block;
         transform: scale(1);

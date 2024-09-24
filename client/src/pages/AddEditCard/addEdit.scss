@@ -25,6 +25,15 @@ body.ar {
   }
   .container {
     margin: 30px auto;
+    & > h1 {
+      text-align: center;
+      color: #000;
+      font-family: Roboto;
+      font-size: 30px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
   }
 
   .react-tel-input {
@@ -58,6 +67,10 @@ body.ar {
   }
   .gender {
     margin: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     p {
       font-family: Rubik;
       font-size: 16px;

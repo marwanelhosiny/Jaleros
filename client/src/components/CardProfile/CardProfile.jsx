@@ -42,7 +42,6 @@ const baseProfile =
 
 function CardProfile({ card, forPreview = false }) {
   const [socialLinks, setSocialLinks] = useState([]);
-  const [flag, setFlag] = useState(true);
   const [mode, setMode] = useState(localStorage.modeCard || "default");
   const navigate = useNavigate();
   const handleSocialLinks = () => {
@@ -66,7 +65,7 @@ function CardProfile({ card, forPreview = false }) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        `https://jaleros.com/previewCard/${card.id}`
+        `https://jaleros.com/${card?.username}`
       );
       toast({
         isClosable: true,
@@ -110,7 +109,8 @@ function CardProfile({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-            <Link target="blank" to={`https://jaleros.com/previewCard/${card?.id}`}>{card?.name || "Jemy"}</Link>
+
+            <Link target="blank" to={`https://jaleros.com/${card?.username}`}>{card?.name || "Jemy"}</Link>
               <h3>{card?.role || "FullStack Developer"}</h3>
               <h3 className="location">
                 <i className="fa-solid fa-location-dot"></i>{" "}
@@ -181,7 +181,7 @@ function CardProfile({ card, forPreview = false }) {
             {forPreview ? (
               <button>{t("Follow")}</button>
             ) : (
-              <button onClick={() => navigate(`/Edit_Card/${card.id}`)}>
+              <button onClick={() => navigate(`/Edit_Card/${card?.id}`)}>
                 {t("Edit")}
               </button>
             )}

@@ -25,7 +25,7 @@ function Contact() {
           <div className="scoial">
             <div className="flex">
               <i className="fa-solid fa-location-dot"></i>
-              <p>1055 Arthur ave Elk Groot, 67. New Palmas South Carolina</p>
+              <p>{t("1055 Arthur ave Elk Groot, 67. New Palmas South Carolina")}</p>
             </div>
             <div className="flex">
               <i className="fa-solid fa-phone-volume"></i>

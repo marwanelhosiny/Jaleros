@@ -1,17 +1,20 @@
 .auth {
+  margin-top: 10px;
   .flex_auth {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 10px;
   }
   .stackform {
     width: calc((100% - 40px) / 2);
+    &.force {
+      width: 100% !important;
+    }
     flex-grow: 1;
     margin: 5px 0px;
     .box {
-      max-width: 100%;
       padding: 10px;
-      gap: 10px;
+      gap: 5px;
       border: 1.5px solid #bfbdbd;
       &.error {
         border:  1px solid red !important;
@@ -27,7 +30,7 @@
     input,
     select {
       outline: none;
-      max-width: 100%;
+      flex-grow: 1;
       background-color: transparent !important;
       border: none;
       &::placeholder {

@@ -70,6 +70,21 @@ body.ar {
     right: auto;
     left: 10px;
   }
+  .chakra-toast {
+    button {
+      right: auto;
+      left: 10px;
+    }
+  }
+  .signLogin {
+    .btns {
+      button {
+        p {
+          font-size: 20px;
+        }
+      }
+    }
+  }
 }
 
 .notiHeader {

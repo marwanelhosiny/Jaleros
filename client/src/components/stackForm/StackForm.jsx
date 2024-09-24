@@ -3,10 +3,10 @@ import React from "react";
 
 function StackForm({
   // common
-  directionBox = "row",
   stackType,
   label,
   error = false,
+  needForce = false ,
   // icon or src
   icon,
   src,
@@ -30,13 +30,13 @@ function StackForm({
   symbols = true,
 }) {
   return (
-    <div className="stackform">
+    <div className={`stackform ${needForce && "force"}`}>
       <h1 className="label">
         {label && t(label)} {error && <span style={{ color: "red" }}>*</span>}
       </h1>
       <div
         className={`box ${error && "error"}`}
-        style={{ display: "flex", flexDirection: directionBox }}
+        style={{ display: "flex"}}
       >
         {stackType === "input" ? (
           <input

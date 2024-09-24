@@ -57,16 +57,17 @@ function Header() {
   const [OTP, setOtp] = useState();
   const toast = useToast();
   const navigate = useNavigate();
-  const [isLargeDrawerOpen, setLargeDrawerOpen] = useState(false);
-  const [isSmallDrawerOpen, setSmallDrawerOpen] = useState(false);
-  const openLargeDrawer = () => setLargeDrawerOpen(true);
-  const closeLargeDrawer = () => setLargeDrawerOpen(false);
-  const openSmallDrawer = () => setSmallDrawerOpen(true);
-  const closeSmallDrawer = () => setSmallDrawerOpen(false);
+  // const [isLargeDrawerOpen, setLargeDrawerOpen] = useState(false);
+  // const [isSmallDrawerOpen, setSmallDrawerOpen] = useState(false);
+  // const openLargeDrawer = () => setLargeDrawerOpen(true);
+  // const closeLargeDrawer = () => setLargeDrawerOpen(false);
+  // const openSmallDrawer = () => setSmallDrawerOpen(true);
+  // const closeSmallDrawer = () => setSmallDrawerOpen(false);
   // for user login and sign Up
   const [inputsData, setInputsData] = useState({
     email: "",
     fullName: "",
+    username : "" ,
     password: "",
   });
   const [errorLogin, setErrorLogin] = useState(false);
@@ -106,27 +107,23 @@ function Header() {
 
   // open auth modal
 
-  const changeLanguage = async (id) => {
-    await i18n.changeLanguage(id);
+  const changeLanguage = (id) => {
     localStorage.lang = id;
     localStorage.direction = id == "ar" ? "rtl" : "ltr";
-    document.body.style.direction = id == "ar" ? "rtl" : "ltr";
-    document.body.classList.add(id);
-    if (id == "ar") document.body.classList.remove("en");
-    if (id == "en") document.body.classList.remove("ar");
     location.reload();
   };
 
   const handleSignUp = async () => {
     setErrorRegister(false);
     try {
-      const { email, fullName, password } = inputsData;
-      if (!email || !password || !fullName) return setErrorRegister(true);
+      const { email, fullName, password , username } = inputsData;
+      if (!email || !password || !fullName || !username) return setErrorRegister(true);
       setLoading(true);
       const { data } = await apiAxios.post("user", {
         email,
         fullName,
         password,
+        username
       });
       toast({
         duration: 5000,
@@ -204,19 +201,19 @@ function Header() {
     setLoading(false);
   };
 
-  const handleResizeDrawer = () => {
-    if (window.innerWidth >= 768) {
-      setSmallDrawerOpen(false);
-    } else {
-      setLargeDrawerOpen(false);
-    }
-  };
+  // const handleResizeDrawer = () => {
+  //   if (window.innerWidth >= 768) {
+  //     setSmallDrawerOpen(false);
+  //   } else {
+  //     setLargeDrawerOpen(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    window.addEventListener("resize", handleResizeDrawer);
-    // Cleanup
-    return () => window.removeEventListener("resize", handleResizeDrawer);
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("resize", handleResizeDrawer);
+  //   // Cleanup
+  //   return () => window.removeEventListener("resize", handleResizeDrawer);
+  // }, []);
 
   return (
     <header className="header">
@@ -235,7 +232,7 @@ function Header() {
           </div>
           {token ? (
             <div className="profile">
-              <div className="img" onClick={openLargeDrawer}>
+              {/* <div className="img" onClick={openLargeDrawer}>
                 <p className="num"></p>
                 <img src={noti} alt="" />
                 <Drawer onClose={closeLargeDrawer} isOpen={isLargeDrawerOpen}>
@@ -261,7 +258,7 @@ function Header() {
                     </DrawerFooter>
                   </DrawerContent>
                 </Drawer>
-              </div>
+              </div> */}
               <div className="con">
                 <h3>{t("Welcome Home")}</h3>
                 <Menu>
@@ -282,7 +279,11 @@ function Header() {
                     <MenuItem
                       onClick={async () => {
                         localStorage.removeItem("token");
-                        if (pathname.includes("Edit_Card")) navigate("/");
+                        if (
+                          pathname.includes("Edit_Card") ||
+                          pathname.includes("Create_Card")
+                        )
+                          navigate("/");
                         location.reload();
                       }}
                     >
@@ -371,13 +372,20 @@ function Header() {
 
         <div className="smallHeader">
           <div className="item">
-            <img src={logo} alt="" onClick={()=> navigate("/")} className="logo" style={{cursor : "pointer"}}/>
+            <img
+              src={logo}
+              alt=""
+              onClick={() => navigate("/")}
+              className="logo"
+              style={{ cursor: "pointer" }}
+            />
             {token && (
               <div className="profile two">
                 <h3>{t("Welcome Home")}</h3>
                 <Menu>
                   <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                     <div className="flexer">
+                      <Avatar size={"xs"} name={user?.fullName} />
                       <h3>{user?.fullName}</h3>
                     </div>
                   </MenuButton>
@@ -408,6 +416,7 @@ function Header() {
                 src={toggleSrc ? Bar : menu}
                 alt=""
                 onClick={() => setToggleSrc(!toggleSrc)}
+                className={`${toggleSrc && "justSmall"}`}
               />
               <div className="lang">
                 <Popover
@@ -448,7 +457,7 @@ function Header() {
             </nav>
             {token ? (
               <div className="fromlogin">
-                <div className="img" onClick={openSmallDrawer}>
+                {/* <div className="img" onClick={openSmallDrawer}>
                   <p className="num"></p>
                   <img src={noti} alt="" />
                   <Drawer onClose={closeSmallDrawer} isOpen={isSmallDrawerOpen}>
@@ -474,8 +483,8 @@ function Header() {
                       </DrawerFooter>
                     </DrawerContent>
                   </Drawer>
-                </div>
-                <Avatar size={"sm"} name={user?.fullName} />
+                </div> */}
+  
               </div>
             ) : (
               <div className="logicAuth small">

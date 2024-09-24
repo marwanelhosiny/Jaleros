@@ -8,6 +8,8 @@ export const createCardSchema = {
         city: Joi.string(),
         location : Joi.string(),
         about : Joi.string(),
+        role : Joi.string(),
+        category : Joi.string(),
         phoneNumber : Joi.string(),
         facebook: Joi.string(),
         instagram: Joi.string(),
@@ -19,6 +21,7 @@ export const createCardSchema = {
         telegram: Joi.string(),
         reddit: Joi.string(),
         pinterest: Joi.string(),
+        storeLink : Joi.string(),
         custom1: Joi.string(),
         custom2: Joi.string(),
         custom3: Joi.string(),
@@ -34,6 +37,8 @@ export const updateCardSchema = {
         city: Joi.string(),
         location : Joi.string(),
         about : Joi.string(),
+        role : Joi.string(),
+        category : Joi.string(),
         phoneNumber : Joi.string(),
         facebook: Joi.string(),
         instagram: Joi.string(),
@@ -45,6 +50,7 @@ export const updateCardSchema = {
         telegram: Joi.string(),
         reddit: Joi.string(),
         pinterest: Joi.string(),
+        storeLink : Joi.string(),
         custom1: Joi.string(),
         custom2: Joi.string(),
         custom3: Joi.string(),
@@ -53,8 +59,13 @@ export const updateCardSchema = {
     }).unknown(true),
 }
 
-export const singleCardSchema = {
+export const getCardSchema = {
     params: Joi.object({
         username: Joi.string(),
+    }),
+}
+export const deleteCardSchema = {
+    params: Joi.object({
+        cardId: Joi.string(),
     }),
 }

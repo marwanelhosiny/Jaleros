@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import basicBG from "../../assets/images/card/BAckground Image.png";
-import link from "../../assets/images/card/Link.png";
-import linkBlack from "../../assets/images/LinkWhite.png";
 import share from "../../assets/images/Pricing/box-2/share.png";
-import shareBlack from "../../assets/images/shareBlack.png";
 import shape from "../../assets/images/card/Vector.png";
 import { t } from "i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -43,6 +40,7 @@ function BasicCard({ card, forPreview = false }) {
       if (
         social[key] !== null &&
         social[key] !== " " &&
+        social[key] !== "null" &&
         key !== "id" &&
         key !== "cardId"
       ) {
@@ -58,7 +56,7 @@ function BasicCard({ card, forPreview = false }) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        `https://jaleros.com/previewCard/${card.id}`
+        `https://jaleros.com/${card.username}`
       );
       toast({
         isClosable: true,
@@ -96,7 +94,9 @@ function BasicCard({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <Link target="blank" to={`https://jaleros.com/previewCard/${card.id}`}>{card?.name || "Jemy"}</Link>
+              <Link target="blank" to={`https://jaleros.com/${card.username}`}>
+                {card?.name || "Jemy"}
+              </Link>
               <h3>{card?.role || "FullStack Developer"}</h3>
             </div>
           </div>
@@ -106,7 +106,11 @@ function BasicCard({ card, forPreview = false }) {
           {forPreview ? (
             <button>{t("Follow")}</button>
           ) : (
-            <button onClick={() => navigate(`/Edit_Card/${card.id}`)}>
+            <button
+              onClick={() =>
+                navigate(`/Edit_Card/${card?.username}/${card?.id}`)
+              }
+            >
               {t("Edit")}
             </button>
           )}
@@ -126,6 +130,9 @@ function BasicCard({ card, forPreview = false }) {
                 </a>
               );
             })}
+          {card?.email && (
+            <a href={`mailto:${card?.email}`}>{socialIcons["email"]}</a>
+          )}
         </div>
         <div className="about">
           <h1>{t("About me")}</h1>

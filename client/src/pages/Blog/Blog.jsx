@@ -28,7 +28,8 @@ function Blog() {
                   "The Importance of Digital Cards in the Modern Technological Era"
                 )}
               </h3>
-              <h5>Oct 19 . 10 min read</h5>
+              <h5>Oct 19 </h5>
+              <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
           </div>
           <div className="intro">
@@ -132,7 +133,8 @@ function Blog() {
                 <p>{t("Digital Cards")}</p>
               </div>
               <h3>{t("How Digital Business Cards Are Changing Networking")}</h3>
-              <h5>Oct 19 . 10 min read</h5>
+              <h5>Oct 19 </h5>
+              <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
             <div className="box">
               <img src={art_2} alt="" />
@@ -140,8 +142,9 @@ function Blog() {
                 <img src={Ball2} alt="" />
                 <p>{t("Digital Cards")}</p>
               </div>
-              <h3>{t("How Digital Business Cards Are Changing Networking")}</h3>
-              <h5>Oct 19 . 10 min read</h5>
+              <h3>{t("The Future of Business Cards")}</h3>
+              <h5>Oct 19 </h5>
+              <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
             <div className="box">
               <img src={art_3} alt="" />
@@ -149,8 +152,9 @@ function Blog() {
                 <img src={Ball2} alt="" />
                 <p>{t("Digital Cards")}</p>
               </div>
-              <h3>{t("How Digital Business Cards Are Changing Networking")}</h3>
-              <h5>Oct 19 . 10 min read</h5>
+              <h3>{t("Why Digital is the Way Forward")}</h3>
+              <h5>Oct 19 </h5>
+              <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
           </div>
           <div className="head smallShow">
