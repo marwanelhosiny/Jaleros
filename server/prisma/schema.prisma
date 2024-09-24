@@ -16,6 +16,7 @@ datasource db {
 
 model User {
   id          Int      @id @default(autoincrement())
+  username    String   @unique
   fullName    String
   email       String   @unique
   phoneNumber String?
@@ -62,11 +63,11 @@ enum CardType {
 model Card {
   id          Int      @id @default(autoincrement())
   userId      Int      
-  name        String   @default("Unnamed Card")
+  name        String   @default("Unnamed Card") 
   rate        Int
   phoneNumber String?
   email       String?
-  country     String?
+  country     String?   
   city        String?
   location    String?
   about       String?
@@ -85,7 +86,7 @@ model Card {
   updatedAt   DateTime @updatedAt
 
   // Foreign key relation
-  user        User     @relation(fields: [userId], references: [id]) // Foreign key to User model
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Foreign key to User model
 
   // Relation field
   social       Social?   // One-to-One relationship (a card can have one social)

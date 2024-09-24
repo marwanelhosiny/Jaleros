@@ -375,18 +375,46 @@ export const deleteCard = async (req, res, next) => {
 //================================================ get cards ========================================//
 
 export const getCards = async (req, res, next) => {
-    
 
-    // find cards
-    const cards = await prisma.card.findMany({
-        include: {
-            social: true
-        },
-    });
-    
-    res.status(200).json({ message: 'Cards fetched successfully', cards });
+        const { page = 1, limit = 6 } = req.query; // Default pagination values
+        const { name, country, city } = req.body;
 
-}
+        console.log(country);
+
+        // find cards with case-insensitive filtering for country, city, and name, sorted by rate
+        const cards = await prisma.card.findMany({
+            where: {
+                country: {
+                    contains: country,  // Case-insensitive partial match for country
+                    mode: 'insensitive',
+                },
+                city: {
+                    contains: city,  // Case-insensitive partial match for city
+                    mode: 'insensitive',
+                },
+                name: {
+                    contains: name,  // Case-insensitive partial match for name
+                    mode: 'insensitive',
+                },
+            },
+            include: {
+                social: true,  // Include the related 'social' data
+            },
+            orderBy: {
+                rate: 'desc',  // Sort by rate in descending order (higher rates first)
+            },
+            skip: (page - 1) * limit,  // For pagination
+            take: parseInt(limit),  // Limit number of results
+        });
+
+        res.status(200).json({
+            message: 'Cards fetched successfully',
+            cards,
+            page,
+            limit,
+        });
+
+};
 //================================================ get sponsored cards ========================================//
 
 export const sponsoredCards = async (req, res, next) => {
@@ -411,11 +439,16 @@ export const sponsoredCards = async (req, res, next) => {
 
 export const getCardById = async (req, res, next) => {
     
-    const { cardId } = req.params
+    const { username } = req.params
+
+    //find user
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
 
     // find card
-    const id  = parseInt(cardId)
-    const card = await prisma.card.findUnique({ where: { id }  , include:{social:true}});
+    const card = await prisma.card.findUnique({ where: { userId : user.id }  , include:{social:true}});
     if (!card) {
         return res.status(404).json({ message: 'Card not found' });
     }

@@ -8,11 +8,15 @@ import prisma from "../../../DB/prisma.js"
 //============================================== register api =======================================//
 export const signUp = async (req, res, next) => {
     //destructing enteries from req
-    const { fullName, email, password , phoneNumber } = req.body
+    const { fullName , username , email, password , phoneNumber } = req.body
     
     //checking if email duplicated
     const checkEmail = await prisma.user.findUnique({ where: { email: email }})
     if (checkEmail) { return next(new Error('duplicated email', { cause: 400 })) }
+
+    //checking if username duplicated
+    const checkUsername = await prisma.user.findUnique({ where: { username: username }})
+    if (checkUsername) { return next(new Error('duplicated username', { cause: 400 })) }
 
     //hashing password
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -22,7 +26,7 @@ export const signUp = async (req, res, next) => {
     const OTP = generateUniequeString(4)
 
     //creating user with all required data
-    const user = await prisma.user.create({data:{ fullName ,email , phoneNumber, password: hashedPassword  ,  OTP}})
+    const user = await prisma.user.create({data:{ fullName , username ,email , phoneNumber, password: hashedPassword  ,  OTP}})
     if (!user) {
         return res.status(500).json({ message: 'Failed to create user' });
     }
@@ -89,6 +93,7 @@ export const getUserData = async (req,res,next) => {
     const userData = await prisma.user.findUnique({
         where: { id }, select: {
             id: true,
+            username:true,
             fullName: true,
             email: true,
             phoneNumber: true,
