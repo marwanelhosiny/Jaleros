@@ -1,10 +1,8 @@
 pipeline {
     agent any
-
     triggers {
         githubPush()
     }
-
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-repo')
         DOCKER_IMAGE = "marwanelhosiny/jaleros-platform"
@@ -13,90 +11,69 @@ pipeline {
         DOCKER_COMPOSE_PATH = "./docker-compose.yml"
         DEPLOY_SCRIPT_PATH = "./deploy.sh"
     }
-
     stages {
         stage('Install Dependencies') {
             steps {
                 echo "Installing Node.js dependencies..."
-                script {
-                    sh 'node -v'
-                    sh 'npm -v'
-                    sh '''
-                        set -x
-                        npm install
-                    '''
-                }
+                sh 'node -v'
+                sh 'npm -v'
+                sh 'npm install'
             }
         }
-
         stage('Build App') {
             steps {
                 echo "Building frontend and backend..."
-                script {
-                    sh '''
-                        set -x
-                        # Add build commands here if needed
-                    '''
-                }
+                // Add build commands here if needed
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                script {
-                    sh """
-                        set -x
-                        docker build -t ${DOCKER_IMAGE}:latest .
-                    """
-                }
+                sh "docker build -t ${DOCKER_IMAGE}:latest ."
             }
         }
-
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image to Docker Hub..."
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh """
-                            set -x
-                            echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                        sh '''
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                             docker push ${DOCKER_IMAGE}:latest
                             docker logout
-                        """
+                        '''
                     }
                 }
             }
         }
-
         stage('Deploy to Server') {
             steps {
                 echo "Deploying app via SSH..."
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sshagent([SSH_CREDENTIALS_ID]) {
-                            sh """
-                                set -x
+                            sh '''
                                 scp ${DOCKER_COMPOSE_PATH} ${SSH_SERVER}:/home/appuser/myApp/docker-compose.yml
-                                echo '#!/bin/bash
-                                export DOCKER_USERNAME="${DOCKER_USERNAME}"
-                                export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
-                                echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
-                                cd /home/appuser/myApp
-                                docker-compose pull
-                                docker-compose up -d
-                                docker logout' > ${DEPLOY_SCRIPT_PATH}
+                                cat <<EOT > ${DEPLOY_SCRIPT_PATH}
+#!/bin/bash
+export DOCKER_USERNAME="${DOCKER_USERNAME}"
+export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
+echo "\$DOCKER_PASSWORD" | docker login -u "\$DOCKER_USERNAME" --password-stdin
+cd /home/appuser/myApp
+docker-compose pull
+docker-compose up -d
+docker logout
+EOT
                                 chmod +x ${DEPLOY_SCRIPT_PATH}
                                 scp ${DEPLOY_SCRIPT_PATH} ${SSH_SERVER}:/home/appuser/myApp/
                                 ssh ${SSH_SERVER} 'bash /home/appuser/myApp/deploy.sh'
-                            """
+                            '''
                         }
                     }
                 }
             }
         }
     }
-
     post {
         success {
             echo "Deployment successful!"
