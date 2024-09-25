@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs';
 import generateUniequeString from "../../utils/generateUniqueString.js";
 import { clearFolder } from "../../utils/cleanupFolder.js";
-import { promisify } from 'util';
 
 
 
@@ -160,10 +159,12 @@ export const createCard = async (req, res, next) => {
 export const updateCard = async (req, res, next) => {
 
     // Destructuring entries from the request body
-        const { name, country, city, location, about, phoneNumber, email, removeGalleryPics = [] ,role , category } = req.body;
+        const { name, country, city, location, about, phoneNumber, email ,role , category } = req.body;
         const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest,storeLink, custom1, custom2, custom3 } = req.body;
         const { id: userId , username } = req.authUser;
         const { cardId } = req.params;
+        let { removeGalleryPics } = req.body;
+        removeGalleryPics= JSON.parse(removeGalleryPics)
 
         // Handle file uploads
         const profilePicDocFile = req.files['profilePic'] ? req.files['profilePic'][0] : null;
@@ -330,52 +331,37 @@ export const updateCard = async (req, res, next) => {
 
 //============================================== delete card ==========================================//
 
+
 export const deleteCard = async (req, res, next) => {
-        const { id: userId , username} = req.authUser;
-        const { cardId } = req.params;
+    const { id: userId, username } = req.authUser; // Get user info from auth
+    const { cardId } = req.params; // Get cardId from the request parameters
 
-        // Find the card
-        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), username } });
-        if (!card) {
-            return res.status(404).json({ message: 'Card not found' });
+    // Find the card
+    const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), username } });
+    if (!card) {
+        return res.status(404).json({ message: 'Card not found' });
+    }
+
+    // Delete related social data
+    await prisma.social.deleteMany({ where: { cardId: parseInt(cardId) } }); // Use deleteMany for safety
+
+    // Define the card directory path
+    const cardDirectory = path.join('uploads', 'users', userId.toString(), 'cards', cardId.toString());
+
+    // Function to delete the directory and its contents
+    const deleteDirectory = (directoryPath) => {
+        if (fs.existsSync(directoryPath)) {
+            fs.rmSync(directoryPath, { recursive: true, force: true }); // Delete the directory and all its contents
         }
+    };
 
-        // Delete related social data
-        await prisma.social.delete({ where: { cardId: parseInt(cardId) } });
+    // Delete the entire card directory
+    deleteDirectory(cardDirectory);
 
-        // Delete local media files
-        const mediaPaths = [
-            card.profilePic,
-            card.coverPic,
-            card.cv,
-            ...card.gallery
-        ];
+    // Delete the card from the database
+    await prisma.card.delete({ where: { id: parseInt(cardId) } });
 
-        // Function to delete a file
-        const deleteFile = (filePath) => {
-            const fullPath = path.join('uploads', filePath);
-            if (fs.existsSync(fullPath)) {
-                fs.unlinkSync(fullPath);
-            }
-        };
-
-        // Delete each media file
-        mediaPaths.forEach(file => {
-            const filePath = file.replace(`${req.protocol}://${req.get('host')}/`, '');
-            deleteFile(filePath);
-        });
-
-        // Delete the card
-        await prisma.card.delete({ where: { id: parseInt(cardId) } });
-
-        // Optionally, remove the empty directories if needed
-        const cardDirectory = path.join('uploads', 'users', userId.toString(), 'cards', cardId.toString());
-        if (fs.existsSync(cardDirectory)) {
-            fs.rmdirSync(cardDirectory, { recursive: true });
-        }
-
-        res.status(200).json({ message: 'Card deleted successfully', card });
-
+    res.status(200).json({ message: 'Card deleted successfully', card });
 };
 
 //================================================ get cards ========================================//
@@ -423,21 +409,42 @@ export const getCards = async (req, res, next) => {
 //================================================ get sponsored cards ========================================//
 
 export const sponsoredCards = async (req, res, next) => {
-    
 
-    // find cards
-    const cards = await prisma.card.findMany(
-        {
-            where:{sponsored: true},
-            include:{
-                social: true
+        // Find sponsored cards
+        const cards = await prisma.card.findMany({
+            where: { sponsored: true },
+            include: { social: true }
+        });
+
+        // Prepare an array to store cards with follower and following counts
+        const cardsWithCounts = await Promise.all(cards.map(async (card) => {
+            // Get user info using the username in the card
+            const user = await prisma.user.findUnique({ where: { username: card.username } });
+            if (!user) {
+                // If user not found, return the card without follower/following counts
+                return { ...card, Followers: 0, Following: 0 };
             }
-    }
-    );
-    
-    res.status(200).json({ message: 'Cards fetched successfully', cards });
 
-}
+            // Get followers and following counts
+            const [theFollowers, theFollowing] = await Promise.all([
+                prisma.follow.findMany({ where: { followingId: user.id }, select: { followerId: true } }),
+                prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
+            ]);
+
+            const Followers = theFollowers.length;
+            const Following = theFollowing.length;
+
+            // Return card with followers and following counts
+            return {
+                ...card,
+                Followers,
+                Following
+            };
+        }));
+
+        res.status(200).json({ message: 'Cards fetched successfully', cards: cardsWithCounts });
+
+};
 
 
 //================================================ get one card =================================================//
@@ -446,6 +453,24 @@ export const getCardById = async (req, res, next) => {
     
     const { username } = req.params
 
+    // Get user info 
+    const user = await prisma.user.findUnique({where:{username}})
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    //get followers
+
+    const [theFollowers, theFollowing] = await Promise.all([
+        prisma.follow.findMany({ where: { followingId: user.id }, select: { followerId: true } }),
+        prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
+    ]);
+
+    const Followers = theFollowers.length
+    const Following = theFollowing.length
+
+
+
 
     // find card
     const card = await prisma.card.findUnique({ where: { username }  , include:{social:true}});
@@ -453,7 +478,7 @@ export const getCardById = async (req, res, next) => {
         return res.status(404).json({ message: 'Card not found' });
     }
     
-    res.status(200).json({ message: 'Card fetched successfully', card });
+    res.status(200).json({ message: 'Card fetched successfully', ...card , Followers , Following });
 
 }
 
@@ -461,12 +486,24 @@ export const getCardById = async (req, res, next) => {
 
 export const getMyCards = async (req, res, next) => {
     
-    const { username } = req.authUser
+    const { username , id } = req.authUser
+
+
+    //get followers
+
+    const [theFollowers, theFollowing] = await Promise.all([
+        prisma.follow.findMany({ where: { followingId: id }, select: { followerId: true } }),
+        prisma.follow.findMany({ where: { followerId: id }, select: { followingId: true } })
+    ]);
+
+    const Followers = theFollowers.length
+    const Following = theFollowing.length
+
 
     // find cards
-    const cards = await prisma.card.findMany({ where: { username } , include:{social:true }});
+    const card = await prisma.card.findFirst({ where: { username } , include:{social:true }});
     
-    res.status(200).json({ message: 'Cards fetched successfully', cards });
+    res.status(200).json({ message: 'Cards fetched successfully', ...card , Followers , Following });
 
 }
 

@@ -17,6 +17,7 @@ app.use(cors());
 
 app.use('/api/user',routes.userRouter)
 app.use('/api/card',routes.cardRouter)
+app.use('/api/follow',routes.followersRouter)
 
 
 

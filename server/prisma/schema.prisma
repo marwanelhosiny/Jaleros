@@ -29,7 +29,8 @@ model User {
   OTP         String?
 
   // Relation field
-  card       Card?   // One-to-One relationship (a user can have one card)
+  card       Card?     @relation("UsernameRelation") // One-to-One relationship (a user can have one card)
+  cardById   Card[]     @relation("UserIdRelation")
 
   // Follow relationships
   following Follow[] @relation("FollowingRelation") // Users this user is following
@@ -62,6 +63,7 @@ enum CardType {
 
 model Card {
   id          Int      @id @default(autoincrement())
+  userId      Int
   username    String      @unique
   name        String   @default("Unnamed Card") 
   rate        Int
@@ -88,7 +90,12 @@ model Card {
   updatedAt   DateTime @updatedAt
 
   // Foreign key relation
-  user        User     @relation(fields: [username], references: [username], onDelete: Cascade) // Foreign key to User model
+  user        User     @relation("UsernameRelation",fields: [username], references: [username], onDelete: Cascade) // Foreign key to User model
+
+    // Foreign key relation for userId
+  userById      User @relation("UserIdRelation",fields: [userId], references: [id]) // Reference to User's id
+
+
 
   // Relation field
   social       Social?   // One-to-One relationship (a card can have one social)

@@ -46,24 +46,30 @@ export const signUp = async (req, res, next) => {
 //================================================ verify-email =====================================//
 
 export const verifyAccount = async (req, res, next) => {
-    const { OTP, email } = req.body
+    const { OTP, email } = req.body;
 
-    const isAccountExist = await prisma.user.update({where:{ email , OTP:OTP, verified: false }, data:{ verified: true, OTP: null }})
-    if (!isAccountExist) { return next(new Error('invalid otp', { cause: 400 })) }
+    // Find the user with the specified email and OTP
+    const user = await prisma.user.findUnique({
+        where: { email },
+    });
 
-    const {
-        id,
-        fullname,
-        phoneNumber,
-    } = isAccountExist
+    // Check if user exists and if OTP is valid and not verified
+    if (!user || user.OTP !== OTP || user.verified) {
+        return next(new Error('Invalid OTP or account already verified', { cause: 400 }));
+    }
 
+    // Proceed with the update since the user exists and OTP is valid
+    const updatedUser = await prisma.user.update({
+        where: { email },
+        data: { verified: true, OTP: null },
+    });
 
-    const token = jwt.sign({ phoneNumber, fullname, email, id }, process.env.ACCESSTOKEN_SECRET_KEY)
+    const { id, fullname, phoneNumber } = updatedUser;
 
+    const token = jwt.sign({ phoneNumber, fullname, email, id }, process.env.ACCESSTOKEN_SECRET_KEY);
 
-    return res.status(200).json({ message: 'account verified successfully', token })
+    return res.status(200).json({ message: 'Account verified successfully', token });
 }
-
 
 //============================================= login api ==========================================//
 export const signIn = async (req, res, next) => {
@@ -90,6 +96,15 @@ export const signIn = async (req, res, next) => {
 //=========================================== getUserData api ===============================//
 export const getUserData = async (req,res,next) => {
     const { id } = req.authUser
+
+    const [theFollowers, theFollowing] = await Promise.all([
+        prisma.follow.findMany({ where: { followingId: id }, select: { followerId: true } }),
+        prisma.follow.findMany({ where: { followerId: id }, select: { followingId: true } })
+    ]);
+
+    const Followers = theFollowers.length
+    const Following = theFollowing.length
+
     const userData = await prisma.user.findUnique({
         where: { id }, select: {
             id: true,
@@ -106,7 +121,7 @@ export const getUserData = async (req,res,next) => {
         } })
     if (!userData) { return next(new Error('user not found', { cause: 404 })) }
     
-    return res.status(200).json({ message: "user data fetched successfully", userData })
+    return res.status(200).json({ message: "user data fetched successfully", userData: { ...userData, Followers, Following } })
 }
 
 
