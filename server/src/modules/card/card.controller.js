@@ -370,7 +370,7 @@ export const deleteCard = async (req, res, next) => {
 export const getCards = async (req, res, next) => {
 
         const { page = 1, limit = 6 } = req.query; // Default pagination values
-        const { name, country, city } = req.body;
+        const { name, country, city , category } = req.body;
 
 
         // find cards with case-insensitive filtering for country, city, and name, sorted by rate
@@ -388,6 +388,10 @@ export const getCards = async (req, res, next) => {
                     contains: name,  // Case-insensitive partial match for name
                     mode: 'insensitive',
                 },
+                category: {
+                    equals: category,  // Filter only for web development category
+                    mode: 'insensitive',
+                }
             },
             include: {
                 social: true,  // Include the related 'social' data
