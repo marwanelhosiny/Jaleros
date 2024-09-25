@@ -63,7 +63,7 @@ enum CardType {
 
 model Card {
   id          Int      @id @default(autoincrement())
-  userId      Int
+  userId      Int?
   username    String      @unique
   name        String   @default("Unnamed Card") 
   rate        Int
@@ -93,7 +93,7 @@ model Card {
   user        User     @relation("UsernameRelation",fields: [username], references: [username], onDelete: Cascade) // Foreign key to User model
 
     // Foreign key relation for userId
-  userById      User @relation("UserIdRelation",fields: [userId], references: [id]) // Reference to User's id
+  userById      User? @relation("UserIdRelation",fields: [userId], references: [id]) // Reference to User's id
 
 
 
