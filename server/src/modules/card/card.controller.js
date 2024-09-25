@@ -31,6 +31,7 @@ export const createCard = async (req, res, next) => {
         const card = await prisma.card.create({
             data: {
                 username,
+                userId,
                 name,
                 email,
                 country,
