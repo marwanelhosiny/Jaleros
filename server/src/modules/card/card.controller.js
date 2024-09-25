@@ -479,7 +479,7 @@ export const getCardById = async (req, res, next) => {
         return res.status(404).json({ message: 'Card not found' });
     }
     
-    res.status(200).json({ message: 'Card fetched successfully', ...card , Followers , Following });
+    res.status(200).json({ message: 'Card fetched successfully', card:{...card , Followers , Following} });
 
 }
 
@@ -504,7 +504,7 @@ export const getMyCards = async (req, res, next) => {
     // find cards
     const card = await prisma.card.findFirst({ where: { username } , include:{social:true }});
     
-    res.status(200).json({ message: 'Cards fetched successfully', ...card , Followers , Following });
+    res.status(200).json({ message: 'Cards fetched successfully', card:{...card , Followers , Following} });
 
 }
 
