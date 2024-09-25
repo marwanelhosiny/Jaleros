@@ -54,19 +54,16 @@ pipeline {
                         sshagent([SSH_CREDENTIALS_ID]) {
                             sh '''
                                 scp ${DOCKER_COMPOSE_PATH} ${SSH_SERVER}:/home/appuser/myApp/docker-compose.yml
-                                cat <<EOT > ${DEPLOY_SCRIPT_PATH}
+                                ssh ${SSH_SERVER} "cat > /home/appuser/myApp/deploy.sh << EOL
 #!/bin/bash
-export DOCKER_USERNAME="${DOCKER_USERNAME}"
-export DOCKER_PASSWORD="${DOCKER_PASSWORD}"
-echo "\$DOCKER_PASSWORD" | docker login -u "\$DOCKER_USERNAME" --password-stdin
+echo \\"${DOCKER_PASSWORD}\\" | docker login -u \\"${DOCKER_USERNAME}\\" --password-stdin
 cd /home/appuser/myApp
 docker-compose pull
 docker-compose up -d
 docker logout
-EOT
-                                chmod +x ${DEPLOY_SCRIPT_PATH}
-                                scp ${DEPLOY_SCRIPT_PATH} ${SSH_SERVER}:/home/appuser/myApp/
-                                ssh ${SSH_SERVER} 'bash /home/appuser/myApp/deploy.sh'
+EOL"
+                                ssh ${SSH_SERVER} "chmod +x /home/appuser/myApp/deploy.sh"
+                                ssh ${SSH_SERVER} "bash /home/appuser/myApp/deploy.sh"
                             '''
                         }
                     }
