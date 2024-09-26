@@ -417,7 +417,7 @@ export const getCards = async (req, res, next) => {
 //================================================ get sponsored cards ========================================//
 
 export const sponsoredCards = async (req, res, next) => {
-    let { authenticatedId } = req.body;
+    let { authenticatedId } = req.query;
 
     // Find sponsored cards
     const cards = await prisma.card.findMany({
@@ -478,7 +478,7 @@ export const sponsoredCards = async (req, res, next) => {
 export const getCardById = async (req, res, next) => {
     
     const { username } = req.params
-    let { authenticatedId } = req.body;
+    let { authenticatedId } = req.query;
 
     
     
