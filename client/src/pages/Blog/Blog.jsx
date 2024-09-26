@@ -17,10 +17,10 @@ function Blog() {
       <div className="container">
         <div className="part-1">
           <div className="img">
-            <img className="main" src={Main} alt="" />
+            <img className="main" src={Main} alt="" loading="lazy" />
             <div className="con">
               <div className="digital">
-                <img src={Ball} alt="" />
+                <img src={Ball} alt="" loading="lazy" />
                 <p>{t("Digital Cards")}</p>
               </div>
               <h3>
@@ -101,9 +101,9 @@ function Blog() {
             <p>{t("Share with your community!")}</p>
             <div className="social">
               <div className="flex">
-                <img src={Facebook} alt="" />
-                <img src={Twitter} alt="" />
-                <img src={Linkedin} alt="" />
+                <img src={Facebook} alt="" loading="lazy" />
+                <img src={Twitter} alt="" loading="lazy" />
+                <img src={Linkedin} alt="" loading="lazy" />
               </div>
             </div>
           </div>
@@ -127,9 +127,9 @@ function Blog() {
           <div className="ralted">
             <h1 className="titleSection">{t("Related Articles")}</h1>
             <div className="box">
-              <img src={art_1} alt="" />
+              <img src={art_1} alt="" loading="lazy" />
               <div className="digital">
-                <img src={Ball2} alt="" />
+                <img src={Ball2} alt="" loading="lazy" />
                 <p>{t("Digital Cards")}</p>
               </div>
               <h3>{t("How Digital Business Cards Are Changing Networking")}</h3>
@@ -137,9 +137,9 @@ function Blog() {
               <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
             <div className="box">
-              <img src={art_2} alt="" />
+              <img src={art_2} alt="" loading="lazy" />
               <div className="digital">
-                <img src={Ball2} alt="" />
+                <img src={Ball2} alt="" loading="lazy" />
                 <p>{t("Digital Cards")}</p>
               </div>
               <h3>{t("The Future of Business Cards")}</h3>
@@ -147,9 +147,9 @@ function Blog() {
               <h5 style={{ marginTop: "5px" }}>{t(". 10 min read")}</h5>
             </div>
             <div className="box">
-              <img src={art_3} alt="" />
+              <img src={art_3} alt="" loading="lazy" />
               <div className="digital">
-                <img src={Ball2} alt="" />
+                <img src={Ball2} alt="" loading="lazy" />
                 <p>{t("Digital Cards")}</p>
               </div>
               <h3>{t("Why Digital is the Way Forward")}</h3>
@@ -161,9 +161,9 @@ function Blog() {
             <p>{t("Share with your community!")}</p>
             <div className="social">
               <div className="flex">
-                <img src={Facebook} alt="" />
-                <img src={Twitter} alt="" />
-                <img src={Linkedin} alt="" />
+                <img src={Facebook} alt="" loading="lazy" />
+                <img src={Twitter} alt="" loading="lazy" />
+                <img src={Linkedin} alt="" loading="lazy" />
               </div>
             </div>
           </div>

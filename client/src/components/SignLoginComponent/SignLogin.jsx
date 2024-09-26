@@ -115,21 +115,21 @@ function SignLogin({
                 {t("Log in")}
               </button>
             )}
-            <div className="another">
+            {/* <div className="another">
               <p>{t("OR")}</p>
               <h5>{t("Continue with social media")}</h5>
               <div className="btns">
                 <button>
                   {" "}
-                  <img src={google} alt="" /> <p>{t("Continue with google")}</p>
+                  <img src={google} alt="" loading="lazy" /> <p>{t("Continue with google")}</p>
                 </button>
                 <button>
                   {" "}
-                  <img src={facebook} alt="" />{" "}
+                  <img src={facebook} alt="" loading="lazy" />{" "}
                   <p>{t("Continue with Facebook")}</p>
                 </button>
               </div>
-            </div>
+            </div> */}
           </Auth>
         </ModalBody>
       </ModalContent>

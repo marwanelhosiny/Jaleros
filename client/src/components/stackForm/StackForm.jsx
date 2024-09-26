@@ -17,6 +17,7 @@ function StackForm({
   placeholderInput,
   valueInput,
   onChangeInput,
+  nameInput ,
   // select
   idselect,
   valueSelect,
@@ -45,6 +46,7 @@ function StackForm({
             onChange={(e) => onChangeInput(e)}
             placeholder={placeholderInput}
             value={valueInput}
+            name={nameInput}
             style={{ flexGrow: 1 }}
           />
         ) : (

@@ -2,7 +2,21 @@ import React, { useEffect, useState } from "react";
 import AddEdit from "../../assets/images/CreateEdit.png";
 import { t } from "i18next";
 import Auth from "../../components/Auth_Component/Auth";
-import { Radio, RadioGroup, Stack, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Radio,
+  RadioGroup,
+  Stack,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import StackForm from "../../components/stackForm/StackForm";
 import "./addEdit.scss";
 import plusIcon from "../../assets/images/Plus icon.png";
@@ -15,44 +29,18 @@ import Loader from "../../components/Loader/Loader";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import apiAxios from "../../utils/apiAxios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Categories } from "../../utils/Commn";
 
-const options = [
-  {
-    name: "Front End Developer",
-    value: "Front_End_Developer",
-  },
-  {
-    name: "Back End Developer",
-    value: "Back_End_Developer",
-  },
-  {
-    name: "Editor",
-    value: "Editor",
-  },
-  {
-    name: "Cars",
-    value: "Cars",
-  },
-  {
-    name: "Restaurants",
-    value: "Restaurants",
-  },
-  {
-    name: "Food",
-    value: "Food",
-  },
-  {
-    name: "communication",
-    value: "communication",
-  },
-];
+
+
+
 
 function AddEditCard({ typePage }) {
   const [gender, setGender] = useState("Male");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [oldGallery, setOldGallery] = useState([]);
-  const { userName , id } = useParams();
+  const { username, id } = useParams();
   const [pics, setPics] = useState({
     profilePic: "",
     coverPic: "",
@@ -62,7 +50,7 @@ function AddEditCard({ typePage }) {
     name: null,
     role: null,
     storeLink: null,
-    category: null,
+    category: "Front_End_Developer",
     cv: null,
     portfolio: null,
     email: null,
@@ -77,9 +65,6 @@ function AddEditCard({ typePage }) {
     linkedin: null,
     reddit: null,
     pinterest: null,
-    custom1: null,
-    custom2: null,
-    custom3: null,
   });
   const [gallery, setGallery] = useState({
     img1: { flag: false, src: null, base: null },
@@ -91,16 +76,26 @@ function AddEditCard({ typePage }) {
     img7: { flag: false, src: null, base: null },
     img8: { flag: false, src: null, base: null },
   });
-  const { loading, setLoading } = useGlarusContext();
+  const [customFields, setCustomFields] = useState({
+    field1: { name: null, link: null },
+    field2: { name: null, link: null },
+    field3: { name: null, link: null },
+    field4: { name: null, link: null },
+    field5: { name: null, link: null },
+    field6: { name: null, link: null },
+  });
+  const { loading, setLoading  } = useGlarusContext();
   const { token } = localStorage;
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate()
 
   const getCard = async () => {
     try {
       setLoading(true);
       const {
         data: { card },
-      } = await apiAxios.get(`card/${userName}`);
+      } = await apiAxios.get(`card/${username}`);
       setData((prev) => {
         return {
           ...prev,
@@ -122,9 +117,12 @@ function AddEditCard({ typePage }) {
           custom3: card?.custom3,
           reddit: card?.reddit,
           pinterest: card?.pinterest,
+          role: card?.role,
+          storeLink: card?.social?.storeLink,
         };
       });
       setPhoneNumber(card?.phoneNumber);
+      if(card?.customFields) setCustomFields(JSON.parse(card?.customFields))
       const { gallery } = card;
       gallery?.forEach((src, i) => {
         setGallery((prev) => {
@@ -134,11 +132,9 @@ function AddEditCard({ typePage }) {
           };
         });
       });
-      setOldGallery(gallery);
     } catch (e) {}
     setLoading(false);
-  };
-
+  };  
   const handleChange = (e) => {
     const { id, value } = e.target;
     setData((prev) => {
@@ -146,7 +142,7 @@ function AddEditCard({ typePage }) {
         ...prev,
         [id]: value,
       };
-    });
+    });    
   };
   const handleGalleryChange = (e, type) => {
     if (type === "add") {
@@ -161,6 +157,7 @@ function AddEditCard({ typePage }) {
       });
     } else {
       const { cell } = e.target.dataset;
+      setOldGallery((prev) => [...prev, gallery[cell]?.src]);
       setGallery((prev) => {
         return {
           ...prev,
@@ -179,15 +176,31 @@ function AddEditCard({ typePage }) {
       };
     });
   };
-  const handleCreateCard = async () => {
+  const handleChangeCustomFields = (e) => {
+    const { id, name, value } = e.target;
+    setCustomFields((prev) => {
+      if (id && !name) {
+        return {
+          ...prev,
+          [id]: { name: value, link: customFields[id]?.link },
+        };
+      } else {
+        return {
+          ...prev,
+          [name]: { name: customFields[name]?.name, link: value },
+        };
+      }
+    });    
+  };
+  const createCard = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
       for (const key in data) {
-        formData.append(String(key), data[key]);
+        formData.append(key, data[key]);
       }
       for (const key in pics) {
-        formData.append(String(key), pics[key]);
+        formData.append(key, pics[key]);
       }
       for (const key in gallery) {
         if (gallery[key]?.base !== null) {
@@ -195,6 +208,7 @@ function AddEditCard({ typePage }) {
         }
       }
       formData.append("phoneNumber", phoneNumber);
+      formData.append("customFields" , JSON.stringify(customFields))
       await apiAxios.post("card", formData, {
         headers: { accesstoken: token },
       });
@@ -205,14 +219,14 @@ function AddEditCard({ typePage }) {
         position: "top",
         status: "success",
       });
+      navigate("/profile")
     } catch (e) {}
     setLoading(false);
   };
-
   const deleteCard = async () => {
     try {
       setLoading(true);
-      await apiAxios.delete(`card/${userName}`, { headers: { accesstoken: token } });
+      await apiAxios.delete(`card/${id}`, { headers: { accesstoken: token } });
       toast({
         duration: 5000,
         isClosable: true,
@@ -220,19 +234,54 @@ function AddEditCard({ typePage }) {
         status: "success",
         position: "top",
       });
+      navigate(-1)
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
+    
+  };
+  const updateCard = async () => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+      for (const key in pics) {
+        formData.append(key, pics[key]);
+      }
+      for (const key in gallery) {
+        if (gallery[key]?.base !== null) {
+          formData.append("gallery", gallery[key]?.base);
+        }
+      }
+      formData.append("phoneNumber", phoneNumber);
+      formData.append("removeGalleryPics", JSON.stringify(oldGallery));
+      formData.append("customFields" , JSON.stringify(customFields))
+      await apiAxios.put("card", formData, {
+        headers: { accesstoken: token },
+      });
+      toast({
+        isClosable: true,
+        duration: 5000,
+        title: t("Successful Operation"),
+        position: "top",
+        status: "success",
+      });
+      navigate(-1)
+    } catch (e) {}
+    setLoading(false);
   };
 
+
   useEffect(() => {
-    userName && getCard();
+    username && getCard();
   }, []);
   return (
     <div className="AddEdit">
       <div className="img">
-        <img src={AddEdit} alt="" />
+        <img src={AddEdit} alt="" loading="lazy" />
       </div>
       <div className="container">
         <h1 className="titleSection">{t("Simple, Easy and Fast")}</h1>
@@ -310,7 +359,7 @@ function AddEditCard({ typePage }) {
               idselect={"category"}
               label={t("Category")}
               onChangeSelect={handleChange}
-              options={options}
+              options={Categories}
               wantedForDisplay={"name"}
               wantedForValue={"value"}
               valueSelect={data.category}
@@ -432,6 +481,120 @@ function AddEditCard({ typePage }) {
               icon={"fa-solid fa-city"}
             />
           </div>
+          <div className="custoumFields">
+            <button className="customButton" onClick={onOpen}>
+              {t("Add Custom Field")}
+            </button>
+            <Modal isOpen={isOpen} onClose={onClose} isCentered size={"xl"}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>{t("Add Custom Field")}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody style={{ paddingBottom: "20px" }}>
+                  <Auth>
+                    <div className="flex_auth">
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field1"}
+                        valueInput={customFields?.field1?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field1"}
+                        valueInput={customFields?.field1?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field2"}
+                        valueInput={customFields?.field2?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field2"}
+                        valueInput={customFields?.field2?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field3"}
+                        valueInput={customFields?.field3?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field3"}
+                        valueInput={customFields?.field3?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field4"}
+                        valueInput={customFields?.field4?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field4"}
+                        valueInput={customFields?.field4?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field5"}
+                        valueInput={customFields?.field5?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field5"}
+                        valueInput={customFields?.field5?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        idInput={"field6"}
+                        valueInput={customFields?.field6?.name}
+                        label={t("Filed name")}
+                        placeholderInput={t("Add Field Name")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                      <StackForm
+                        stackType={"input"}
+                        nameInput={"field6"}
+                        valueInput={customFields?.field6?.link}
+                        label={t("Filed link")}
+                        placeholderInput={t("Add Field link")}
+                        onChangeInput={handleChangeCustomFields}
+                      />
+                    </div>
+                  </Auth>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </div>
           <div className="gallery">
             <h1>{t("Gallery")}</h1>
             <Swiper
@@ -460,7 +623,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img1?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img1?.src} alt="" />
+                    <img src={gallery?.img1?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img1"
@@ -470,7 +633,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img1">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -484,7 +647,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img2?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img2?.src} alt="" />
+                    <img src={gallery?.img2?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img2"
@@ -494,7 +657,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img2">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -508,7 +671,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img3?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img3?.src} alt="" />
+                    <img src={gallery?.img3?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img3"
@@ -518,7 +681,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img3">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -532,7 +695,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img4?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img4?.src} alt="" />
+                    <img src={gallery?.img4?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img4"
@@ -542,7 +705,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img4">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -556,7 +719,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img5?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img5?.src} alt="" />
+                    <img src={gallery?.img5?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img5"
@@ -566,7 +729,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img5">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -580,7 +743,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img6?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img6?.src} alt="" />
+                    <img src={gallery?.img6?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img6"
@@ -590,7 +753,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img6">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -604,7 +767,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img7?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img7?.src} alt="" />
+                    <img src={gallery?.img7?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img7"
@@ -614,7 +777,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img7">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -628,7 +791,7 @@ function AddEditCard({ typePage }) {
               <SwiperSlide>
                 {gallery?.img8?.flag ? (
                   <div className="img">
-                    <img src={gallery?.img8?.src} alt="" />
+                    <img src={gallery?.img8?.src} alt="" loading="lazy" />
                     <i
                       className="fa-solid fa-trash"
                       data-cell="img8"
@@ -638,7 +801,7 @@ function AddEditCard({ typePage }) {
                 ) : (
                   <div className="box">
                     <label htmlFor="img8">
-                      <img src={plusIcon} alt="" />
+                      <img src={plusIcon} alt="" loading="lazy" />
                       <p>{t("Add Media")}</p>
                     </label>
                     <input
@@ -652,12 +815,14 @@ function AddEditCard({ typePage }) {
             </Swiper>
           </div>
           {typePage == "Create" ? (
-            <button className="button" onClick={handleCreateCard}>
+            <button className="button" onClick={createCard}>
               {t("Create Now")}
             </button>
           ) : (
             <div className="btns">
-              <button className="button">{t("Update")}</button>
+              <button className="button" onClick={updateCard}>
+                {t("Update")}
+              </button>
               <button
                 className="button"
                 style={{ marginTop: "15px" }}

@@ -28,35 +28,35 @@ function About() {
             </p>
           </div>
           <div className="img">
-            <img src={imgAbout} alt="" />
+            <img src={imgAbout} alt="" loading="lazy" />
           </div>
         </div>
         <div className="part2">
           <h1 className="titleSection">{t("Our achievements")}</h1>
           <div className="grid">
             <div className="box">
-              <img src={img} alt="" />
+              <img src={img} alt="" loading="lazy" />
               <div className="con">
                 <h3>10.5 {t("K")}</h3>
                 <p>{t("Sallers active our site")}</p>
               </div>
             </div>
             <div className="box">
-              <img src={img2} alt="" />
+              <img src={img2} alt="" loading="lazy" />
               <div className="con">
                 <h3>33 {t("K")}</h3>
                 <p>{t("Mopnthly Product Sale")}</p>
               </div>
             </div>
             <div className="box">
-              <img src={img3} alt="" />
+              <img src={img3} alt="" loading="lazy" />
               <div className="con">
                 <h3>45.5 {t("K")}</h3>
                 <p>{t("Customer active in our site")}</p>
               </div>
             </div>
             <div className="box">
-              <img src={img4} alt="" />
+              <img src={img4} alt="" loading="lazy" />
               <div className="con">
                 <h3>25 {t("K")}</h3>
                 <p>{t("Anual gross sale in our site")}</p>

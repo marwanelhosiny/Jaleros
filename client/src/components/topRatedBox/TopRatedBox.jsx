@@ -13,7 +13,7 @@ function TopRatedBox({ card }) {
     <div className="TopRatedBox">
       <div className="info">
         <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
-          <img src={card?.profilePic || baseSrc} alt="" />
+          <img src={card?.profilePic || baseSrc} alt="" loading="lazy" />
         </Link>
         <div className="con">
           <h1>{card?.title || "Jemy"}</h1>
@@ -27,11 +27,11 @@ function TopRatedBox({ card }) {
       <div className="rate">
         <p>{card?.rate || "4.5"}</p>
         <div className="flexer">
-          <img src={star} alt="" />
-          <img src={star} alt="" />
-          <img src={star} alt="" />
-          <img src={star} alt="" />
-          <img src={star} alt="" />
+          <img src={star} alt="" loading="lazy" />
+          <img src={star} alt="" loading="lazy" />
+          <img src={star} alt="" loading="lazy" />
+          <img src={star} alt="" loading="lazy" />
+          <img src={star} alt="" loading="lazy" />
         </div>
       </div>
     </div>

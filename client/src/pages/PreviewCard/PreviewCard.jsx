@@ -7,19 +7,18 @@ import apiAxios from "../../utils/apiAxios";
 import BasicCard from "../../components/BasicCard/BasicCard";
 import CardProfile from "../../components/CardProfile/CardProfile";
 
-
-
 function PreviewCard() {
   const { userName } = useParams();
   const [card, setCard] = useState();
-  const { loading, setLoading } = useGlarusContext();
+  const { loading, setLoading, user } = useGlarusContext();
   const getCard = async () => {
     try {
       setLoading(true);
       const {
         data: { card },
-      } = await apiAxios.get(`card/${userName}`);
+      } = await apiAxios.get(`card/${userName}/?authenticatedId=${user?.id}`);
       setCard(card);
+      console.log(user);
     } catch (e) {}
     setLoading(false);
   };

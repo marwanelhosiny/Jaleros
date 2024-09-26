@@ -15,6 +15,7 @@ import apiAxios from "../../utils/apiAxios";
 import Loader from "../../components/Loader/Loader";
 import minus from "../../assets/images/minus.png";
 import plus from "../../assets/images/plus.png";
+import filter from "../../assets/images/Filter.png";
 import service1 from "../../assets/images/Home/tokyo-selecting-a-value-in-the-browser-window 1.png";
 import service2 from "../../assets/images/Home/tokyo-magnifier-web-search-with-elements 2.png";
 import service3 from "../../assets/images/Home/tokyo-browser-window-with-emoticon-likes-and-stars-around 2.png";
@@ -27,11 +28,12 @@ import { useNavigate } from "react-router-dom";
 import CardProfile from "../../components/CardProfile/CardProfile";
 import BasicCard from "../../components/BasicCard/BasicCard";
 
+
 function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
   const [page, setPage] = useState("1");
-  const { loading, setLoading, LoginFirstHandler } = useGlarusContext();
+  const { loading, setLoading, LoginFirstHandler , user } = useGlarusContext();
   const navigate = useNavigate();
   const { token } = localStorage;
   const [open, setOpen] = useState({
@@ -56,11 +58,9 @@ function Home() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await apiAxios.get("card/sponsored");
+      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${user?.id})`);
       setSponserdCards(data?.cards);
-      const { data: Arr } = await apiAxios.get(
-        `card/?limit=6&page=${page || "1"}`
-      );
+      const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);
       setCards(Arr?.cards);
       setLoading(false);
     })();
@@ -78,21 +78,51 @@ function Home() {
             </h1>
           </div>
           <div className="combo">
-            <img className="blackBall" src={blackBall} alt="" />
-            <img className="blackHeart" src={blackHeart} alt="" />
-            <img className="blackPause" src={blackPause} alt="" />
-            <img className="blackStar" src={blackStar} alt="" />
-            <img className="blackStar two" src={blackStar} alt="" />
+            <img className="blackBall" src={blackBall} alt="" loading="lazy" />
+            <img
+              className="blackHeart"
+              src={blackHeart}
+              alt=""
+              loading="lazy"
+            />
+            <img
+              className="blackPause"
+              src={blackPause}
+              alt=""
+              loading="lazy"
+            />
+            <img className="blackStar" src={blackStar} alt="" loading="lazy" />
+            <img
+              className="blackStar two"
+              src={blackStar}
+              alt=""
+              loading="lazy"
+            />
             <div className="circle">
-              <img src={circle} alt="" />
-              <img src={circle} alt="" />
-              <img src={circle} alt="" />
+              <img src={circle} alt="" loading="lazy" />
+              <img src={circle} alt="" loading="lazy" />
+              <img src={circle} alt="" loading="lazy" />
             </div>
-            <img className="greenBall" src={greenBall} alt="" />
-            <img className="greenBall two" src={greenBall} alt="" />
-            <img className="greenLocation" src={greenLocation} alt="" />
-            <img className="greenShare" src={greenShare} alt="" />
-            <img className="temp" src={tempCard} alt="" />
+            <img className="greenBall" src={greenBall} alt="" loading="lazy" />
+            <img
+              className="greenBall two"
+              src={greenBall}
+              alt=""
+              loading="lazy"
+            />
+            <img
+              className="greenLocation"
+              src={greenLocation}
+              alt=""
+              loading="lazy"
+            />
+            <img
+              className="greenShare"
+              src={greenShare}
+              alt=""
+              loading="lazy"
+            />
+            <img className="temp" src={tempCard} alt="" loading="lazy" />
           </div>
         </div>
         <div className="con">
@@ -110,8 +140,12 @@ function Home() {
             {t("Create Now")}
           </button>
           <div className="search">
-            <img src={search} alt="" />
+            <div className="quick">
+            <img src={search} alt="" loading="lazy" />
+            <p>{t("Quick Search")}</p>
+            </div>
             <input type="text" placeholder={t("Search By Name")} />
+            <img src={filter} alt="" loading="lazy" className="filter" />
           </div>
         </div>
         <div className="sponserd">
@@ -158,7 +192,12 @@ function Home() {
                   id="one"
                   onClick={(e) => handleActive(e)}
                 >
-                  <img id="one" src={open.one ? minus : plus} alt="" />
+                  <img
+                    id="one"
+                    src={open.one ? minus : plus}
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="con">
@@ -184,7 +223,12 @@ function Home() {
                   id="two"
                   onClick={(e) => handleActive(e)}
                 >
-                  <img id="two" src={open.two ? minus : plus} alt="" />
+                  <img
+                    id="two"
+                    src={open.two ? minus : plus}
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="con">
@@ -206,7 +250,12 @@ function Home() {
                   id="three"
                   onClick={(e) => handleActive(e)}
                 >
-                  <img id="three" src={open.three ? minus : plus} alt="" />
+                  <img
+                    id="three"
+                    src={open.three ? minus : plus}
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="con">
@@ -229,7 +278,12 @@ function Home() {
                   id="four"
                   onClick={(e) => handleActive(e)}
                 >
-                  <img id="four" src={open.four ? minus : plus} alt="" />
+                  <img
+                    id="four"
+                    src={open.four ? minus : plus}
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="con">
@@ -251,7 +305,12 @@ function Home() {
                   id="five"
                   onClick={(e) => handleActive(e)}
                 >
-                  <img id="five" src={open.five ? minus : plus} alt="" />
+                  <img
+                    id="five"
+                    src={open.five ? minus : plus}
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="con">
@@ -277,7 +336,7 @@ function Home() {
                 <div className="con">
                   <h3>{t("Create comprehensive digital cards")}</h3>
                 </div>
-                <img src={service1} alt="" />
+                <img src={service1} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>
@@ -289,7 +348,7 @@ function Home() {
                 <div className="con">
                   <h3>{t("Visibility Enhancement")}</h3>
                 </div>
-                <img src={service2} alt="" />
+                <img src={service2} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>
@@ -301,7 +360,7 @@ function Home() {
                 <div className="con">
                   <h3>{t("Business rating system")}</h3>
                 </div>
-                <img src={service3} alt="" />
+                <img src={service3} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>
@@ -313,7 +372,7 @@ function Home() {
                 <div className="con">
                   <h3>{t("CV and Portfolio")}</h3>
                 </div>
-                <img src={service4} alt="" />
+                <img src={service4} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>
@@ -325,7 +384,7 @@ function Home() {
                 <div className="con">
                   <h3 className="fade">{t("Technical Support")}</h3>
                 </div>
-                <img src={service5} alt="" />
+                <img src={service5} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>
@@ -337,7 +396,7 @@ function Home() {
                 <div className="con">
                   <h3 className="fade">{t("Analytics and Tracking")}</h3>
                 </div>
-                <img src={service6} alt="" />
+                <img src={service6} alt="" loading="lazy" />
               </div>
               <div className="more">
                 <i className="fa-solid fa-location-arrow"></i>

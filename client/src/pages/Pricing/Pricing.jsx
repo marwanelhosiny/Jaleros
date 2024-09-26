@@ -73,16 +73,16 @@ function Pricing() {
               <p>{t("Technical Support within (48h)")}</p>
             </div>
             <div className="card">
-              <img src={user} alt="" />
+              <img src={user} alt=""  loading="lazy"/>
               <div className="con">
                 <h3>John Smith</h3>
                 <p>CEO and Founder</p>
                 <div className="scoial">
-                  <img src={tiktok} alt="" />
-                  <img src={instagram} alt="" />
-                  <img src={snap} alt="" />
+                  <img src={tiktok} alt="" loading="lazy" />
+                  <img src={instagram} alt="" loading="lazy" />
+                  <img src={snap} alt="" loading="lazy" />
                 </div>
-                <img src={share} alt="" className="share" />
+                <img src={share} alt="" className="share" loading="lazy" />
               </div>
             </div>
             {!hasCard.confirm ? (
@@ -117,9 +117,9 @@ function Pricing() {
             </div>
             <div className="card">
               <div className="img">
-                <img src={user} alt="" />
+                <img src={user} alt="" loading="lazy" />
                 <div className="rate">
-                  <img src={star} alt="" />
+                  <img src={star} alt="" loading="lazy" />
                   <p>4.5</p>
                 </div>
               </div>
@@ -127,17 +127,17 @@ function Pricing() {
                 <h3>John Smith</h3>
                 <p>CEO and Founder</p>
                 <div className="location">
-                  <img src={map} alt="" />
+                  <img src={map} alt="" loading="lazy" />
                   <p>Riadh , Saudia</p>
                 </div>
                 <div className="scoial">
-                  <img src={tiktokBox2} alt="" />
-                  <img src={instagramBox2} alt="" />
-                  <img src={snapBox2} alt="" />
+                  <img src={tiktokBox2} alt="" loading="lazy" />
+                  <img src={instagramBox2} alt="" loading="lazy" />
+                  <img src={snapBox2} alt="" loading="lazy" />
                 </div>
               </div>
-              <img src={share} alt="" className="share" />
-              <img src={qrcode} alt="" className="qr" />
+              <img src={share} alt="" className="share" loading="lazy" />
+              <img src={qrcode} alt="" className="qr" loading="lazy" />
             </div>
             {!hasCard.confirm ? (
               <button>{t("Get Start")}</button>
@@ -164,9 +164,9 @@ function Pricing() {
             </div>
             <div className="card">
               <div className="img">
-                <img src={user} alt="" />
+                <img src={user} alt="" loading="lazy" />
                 <div className="rate">
-                  <img src={star} alt="" />
+                  <img src={star} alt="" loading="lazy" />
                   <p>4.5</p>
                 </div>
               </div>
@@ -174,17 +174,17 @@ function Pricing() {
                 <h3>John Smith</h3>
                 <p>CEO and Founder</p>
                 <div className="location">
-                  <img src={map_2} alt="" />
+                  <img src={map_2} alt="" loading="lazy" />
                   <p>Riadh , Saudia</p>
                 </div>
-                <div className="scoial">
-                  <img src={tiktokBox3} alt="" />
-                  <img src={instagramBox3} alt="" />
-                  <img src={snapBox3} alt="" />
+                <div className="scoial"> 
+                  <img src={tiktokBox3} alt="" loading="lazy" />
+                  <img src={instagramBox3} alt="" loading="lazy" />
+                  <img src={snapBox3} alt="" loading="lazy" />
                 </div>
               </div>
-              <img src={share3} alt="" className="share" />
-              <img src={qrcode} alt="" className="qr" />
+              <img src={share3} alt="" className="share" loading="lazy" />
+              <img src={qrcode} alt="" className="qr" loading="lazy"/>
             </div>
             {!hasCard.confirm ? (
               <button>{t("Get Start")}</button>

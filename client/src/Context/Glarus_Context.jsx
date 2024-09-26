@@ -51,9 +51,9 @@ export const GlarusProvider = ({ children }) => {
             duration: 3000,
             title: t("Please login Again"),
           });
-          setOperation("log");
-          setModalAuthOpen(true);
           localStorage.removeItem("token")
+          location.href = "/"
+          location.reload()
         }
       }
       setLoading(false);

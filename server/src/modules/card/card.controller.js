@@ -601,6 +601,7 @@ export const rateCard = async (req, res, next) => {
 
     let ratedTimes = card.ratedTimes + 1
     let rating = (card.rate * card.ratedTimes + rate) / ratedTimes
+    rating = rating.toFixed(1)
 
     const updateCard = await prisma.card.update({
         where: {
@@ -609,8 +610,9 @@ export const rateCard = async (req, res, next) => {
         data: {
             ratedTimes,
             rate: rating
-        },
+        }
     })
 
     return res.status(200).json({ message: "Rated" })
+    
 }

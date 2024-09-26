@@ -45,6 +45,16 @@ body.ar {
           font-weight: 400;
           line-height: normal;
         }
+        .search {
+          .quick {
+            p {
+              left: auto;
+              right: 0%;
+              font-family: Georgia, "Times New Roman", Times, serif;
+              font-size: 14px;
+            }
+          }
+        }
       }
     }
   }
@@ -244,6 +254,24 @@ body.ar {
           border: none;
           outline: none;
         }
+        img {
+          cursor: pointer;
+        }
+        .filter {
+        }
+        .quick {
+          position: relative;
+          p {
+            position: absolute;
+            top: -25px;
+            left: 0px;
+            margin: 0%;
+            width: 120px;
+            font-size: 12px;
+            background-color: #fff;
+            text-align: center;
+          }
+        }
       }
     }
     .sponserd {
@@ -331,7 +359,7 @@ body.ar {
         font-style: normal;
         font-weight: 600;
         margin-bottom: 10px;
-        line-height: 44px; /* 122.222% */
+        line-height: 44px; 
       }
       & > p {
         color: #000;

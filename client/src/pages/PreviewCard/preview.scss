@@ -14,6 +14,8 @@
     background-size: cover;
     background-position:center;
     background-image: url("../../assets/images/About.png");
+    background-attachment: fixed;
+    
     filter: blur(10px);
     z-index: -1;
     pointer-events: none;

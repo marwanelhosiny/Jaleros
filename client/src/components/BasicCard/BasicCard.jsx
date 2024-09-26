@@ -33,7 +33,9 @@ const baseProfile =
 
 function BasicCard({ card, forPreview = false }) {
   const [socialLinks, setSocialLinks] = useState([]);
+  const [customFields, setCustomFields] = useState([]);
   const navigate = useNavigate();
+  const toast = useToast();
   const handleSocialLinks = () => {
     const social = card?.social;
     for (const key in social) {
@@ -41,7 +43,9 @@ function BasicCard({ card, forPreview = false }) {
         social[key] !== null &&
         social[key] !== " " &&
         social[key] !== "null" &&
+        social[key] !== "undefined" &&
         key !== "id" &&
+        key !== "storeLink" &&
         key !== "cardId"
       ) {
         setSocialLinks((prev) => [
@@ -51,7 +55,17 @@ function BasicCard({ card, forPreview = false }) {
       }
     }
   };
-  const toast = useToast();
+  const handleCustomFileds = () => {
+    const Data = JSON.parse(card?.customFields);
+    for (const key in Data) {
+      if (Data[key].name != null && Data[key].link != null) {
+        setCustomFields((prev) => [
+          ...prev,
+          { name: Data[key].name, link: Data[key].link },
+        ]);
+      }
+    }
+  };
 
   const handleCopy = async () => {
     try {
@@ -70,26 +84,58 @@ function BasicCard({ card, forPreview = false }) {
     }
   };
 
+  const handleFollowUnFollow = async () => {
+    if (!token)
+      return toast({
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+        title: t("Login First"),
+        status: "info",
+      });
+    try {
+      setLoading(true);
+      await apiAxios.post(
+        `follow/${card?.userId}`,
+        {},
+        { headers: { accesstoken: token } }
+      );
+      toast({
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+        title: t("Successful Operation"),
+        status: "success",
+      });
+    } catch (e) {}
+    setLoading(false);
+  };
+
   useEffect(() => {
     handleSocialLinks();
+    handleCustomFileds();
   }, [card]);
 
   return (
     <div className={`cardBasic default`}>
       <div className="backImg">
-        <img src={card?.coverPic || basicBG} alt="" />
+        <img src={card?.coverPic || basicBG} alt="" loading="lazy" />
       </div>
       <div className="all">
         <div className="profile">
           <div className="mega">
             <div className="pic">
               <div className="followers">
-                <p>{card?.followers || "320"}</p>
+                <p>{card?.Followers < 0 ? card?.Followers : "0"}</p>
                 <p>{t("Followers")}</p>
               </div>
-              <img src={card?.profilePic || baseProfile} alt="" />
+              <img
+                src={card?.profilePic || baseProfile}
+                alt=""
+                loading="lazy"
+              />
               <div className="followers two">
-                <p>{card?.following || "320"}</p>
+                <p>{card?.Following < 0 ? card?.Following : "0"}</p>
                 <p>{t("Following")}</p>
               </div>
             </div>
@@ -104,7 +150,15 @@ function BasicCard({ card, forPreview = false }) {
         <div className="info_operations">
           <img src={share} alt="" onClick={handleCopy} />
           {forPreview ? (
-            <button>{t("Follow")}</button>
+            card?.isFollowed ? (
+              <button className="normal" onClick={handleFollowUnFollow}>
+                {t("UnFollow")}
+              </button>
+            ) : (
+              <button className="normal" onClick={handleFollowUnFollow}>
+                {t("Follow")}
+              </button>
+            )
           ) : (
             <button
               onClick={() =>
@@ -133,6 +187,36 @@ function BasicCard({ card, forPreview = false }) {
           {card?.email && (
             <a href={`mailto:${card?.email}`}>{socialIcons["email"]}</a>
           )}
+        </div>
+        <div className="customFields">
+          <Swiper
+            pagination={{
+              clickable: true,
+            }}
+            grabCursor={true}
+            autoplay={true}
+            loopFillGroupWithBlank={true}
+            loop={true}
+            freeMode={true}
+            slidesPerView={"auto"}
+            modules={[Autoplay, Pagination]}
+            spaceBetween={10}
+          >
+            {customFields.length &&
+              customFields.map((obj, i) => {
+                return (
+                  <SwiperSlide key={i}>
+                    <a
+                      target="blank"
+                      href={obj.link}
+                      className={`customLink ${mode == "white" && "white"}`}
+                    >
+                      {obj.name}
+                    </a>
+                  </SwiperSlide>
+                );
+              })}
+          </Swiper>
         </div>
         <div className="about">
           <h1>{t("About me")}</h1>
@@ -169,7 +253,7 @@ function BasicCard({ card, forPreview = false }) {
             {card?.gallery?.map((src, i) => {
               return (
                 <SwiperSlide key={i}>
-                  <img src={src} alt="" />
+                  <img src={src} alt="" loading="lazy" />
                 </SwiperSlide>
               );
             })}
