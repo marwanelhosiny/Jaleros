@@ -34,6 +34,7 @@ const baseProfile =
 function BasicCard({ card, forPreview = false }) {
   const [socialLinks, setSocialLinks] = useState([]);
   const [customFields, setCustomFields] = useState([]);
+  const {token} = localStorage
   const navigate = useNavigate();
   const toast = useToast();
   const handleSocialLinks = () => {

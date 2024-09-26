@@ -32,10 +32,6 @@ import apiAxios from "../../utils/apiAxios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Categories } from "../../utils/Commn";
 
-
-
-
-
 function AddEditCard({ typePage }) {
   const [gender, setGender] = useState("Male");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -84,11 +80,11 @@ function AddEditCard({ typePage }) {
     field5: { name: null, link: null },
     field6: { name: null, link: null },
   });
-  const { loading, setLoading  } = useGlarusContext();
+  const { loading, setLoading } = useGlarusContext();
   const { token } = localStorage;
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const getCard = async () => {
     try {
@@ -122,7 +118,7 @@ function AddEditCard({ typePage }) {
         };
       });
       setPhoneNumber(card?.phoneNumber);
-      if(card?.customFields) setCustomFields(JSON.parse(card?.customFields))
+      if (card?.customFields) setCustomFields(JSON.parse(card?.customFields));
       const { gallery } = card;
       gallery?.forEach((src, i) => {
         setGallery((prev) => {
@@ -134,15 +130,21 @@ function AddEditCard({ typePage }) {
       });
     } catch (e) {}
     setLoading(false);
-  };  
+  };
   const handleChange = (e) => {
     const { id, value } = e.target;
+    if (id == "about" && value.length > 160) return toast({
+      duration : 4000 ,
+      isClosable : true ,
+      title : t("Maximum 160 character"),
+      position : "top"
+    }) ;
     setData((prev) => {
       return {
         ...prev,
         [id]: value,
       };
-    });    
+    });
   };
   const handleGalleryChange = (e, type) => {
     if (type === "add") {
@@ -190,7 +192,7 @@ function AddEditCard({ typePage }) {
           [name]: { name: customFields[name]?.name, link: value },
         };
       }
-    });    
+    });
   };
   const createCard = async () => {
     try {
@@ -208,7 +210,7 @@ function AddEditCard({ typePage }) {
         }
       }
       formData.append("phoneNumber", phoneNumber);
-      formData.append("customFields" , JSON.stringify(customFields))
+      formData.append("customFields", JSON.stringify(customFields));
       await apiAxios.post("card", formData, {
         headers: { accesstoken: token },
       });
@@ -219,7 +221,7 @@ function AddEditCard({ typePage }) {
         position: "top",
         status: "success",
       });
-      navigate("/profile")
+      navigate("/profile");
     } catch (e) {}
     setLoading(false);
   };
@@ -234,12 +236,11 @@ function AddEditCard({ typePage }) {
         status: "success",
         position: "top",
       });
-      navigate(-1)
+      navigate(-1);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
-    
   };
   const updateCard = async () => {
     try {
@@ -258,7 +259,7 @@ function AddEditCard({ typePage }) {
       }
       formData.append("phoneNumber", phoneNumber);
       formData.append("removeGalleryPics", JSON.stringify(oldGallery));
-      formData.append("customFields" , JSON.stringify(customFields))
+      formData.append("customFields", JSON.stringify(customFields));
       await apiAxios.put("card", formData, {
         headers: { accesstoken: token },
       });
@@ -269,11 +270,10 @@ function AddEditCard({ typePage }) {
         position: "top",
         status: "success",
       });
-      navigate(-1)
+      navigate(-1);
     } catch (e) {}
     setLoading(false);
   };
-
 
   useEffect(() => {
     username && getCard();

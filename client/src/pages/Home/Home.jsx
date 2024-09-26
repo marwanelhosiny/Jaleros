@@ -61,7 +61,7 @@ function Home() {
       setLoading(true);
       console.log(id);
       
-      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${id})`);
+      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${token ? id : undefined})`);
       setSponserdCards(data?.cards);
       const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);
       setCards(Arr?.cards);
@@ -154,7 +154,7 @@ function Home() {
         <div className="sponserd">
           <h1>{t("Sponsored")}</h1>
           {sponserdCards.length ? (
-            <div className="gird">
+            <div className="grid">
               {sponserdCards.map((card) => {
                 return card?.type == "basic" ? (
                   <BasicCard card={card} forPreview={true} />

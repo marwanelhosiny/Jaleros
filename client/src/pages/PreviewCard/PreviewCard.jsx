@@ -12,13 +12,14 @@ function PreviewCard() {
   const [card, setCard] = useState();
   const { loading, setLoading, user } = useGlarusContext();
   const {id} = JSON.parse(localStorage.user)
+  const {token} = localStorage
   
   const getCard = async () => {
     try {
       setLoading(true);
       const {
         data: { card },
-      } = await apiAxios.get(`card/${userName}/?authenticatedId=${id}`);
+      } = await apiAxios.get(`card/${userName}/?authenticatedId=${token ? id : undefined}`);
       setCard(card);
     } catch (e) {}
     setLoading(false);
