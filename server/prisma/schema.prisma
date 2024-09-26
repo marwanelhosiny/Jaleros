@@ -79,6 +79,7 @@ model Card {
   coverPic    String?
   gallery     String[]
   cv          String?
+  customFields String?
   mediaFolder String?
   type        CardType @default(basic)
   sponsored   Boolean  @default(false) 

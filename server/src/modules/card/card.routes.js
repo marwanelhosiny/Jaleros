@@ -17,7 +17,7 @@ router.post('/', multermiddleLocal(allowedExtensions.Image).fields([
     { name: 'cv', maxCount: 1 },
     { name: 'gallery', maxCount: 5 }
 ]),validationFunction(createCardSchema),auth() , expressAsyncHandler(cc.createCard))
-router.put('/:cardId', multermiddleLocal(allowedExtensions.Image).fields([
+router.put('/', multermiddleLocal(allowedExtensions.Image).fields([
     { name: 'profilePic', maxCount: 1 },
     { name: 'coverPic', maxCount: 1 },
     { name: 'cv', maxCount: 1 },

@@ -55,6 +55,7 @@ export const updateCardSchema = {
         custom2: Joi.string(),
         custom3: Joi.string(),
         removeGalleryPics: Joi.string(),
+        
 
     }).unknown(true),
 }

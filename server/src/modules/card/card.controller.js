@@ -17,7 +17,7 @@ const generateFileUrl = (req, filePath) => {
 
 export const createCard = async (req, res, next) => {
         // Destructure input fields from the request body
-        const { name, country, city, location, about, phoneNumber, email ,role ,category} = req.body;
+        const { name, country, city, location, about, phoneNumber, email ,role ,category , customFields} = req.body;
         const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest,storeLink, custom1, custom2, custom3 } = req.body;
         const { id: userId , username } = req.authUser;
 
@@ -45,6 +45,7 @@ export const createCard = async (req, res, next) => {
                 profilePic: '',
                 coverPic: '',
                 gallery: [],
+                customFields
             },
         });
 
@@ -160,10 +161,9 @@ export const createCard = async (req, res, next) => {
 export const updateCard = async (req, res, next) => {
 
     // Destructuring entries from the request body
-        const { name, country, city, location, about, phoneNumber, email ,role , category } = req.body;
+        const { name, country, city, location, about, phoneNumber, email ,role , category , customFields } = req.body;
         const { facebook, instagram, youtube, X, tikTok, snapchat, linkedin, telegram, reddit, pinterest,storeLink, custom1, custom2, custom3 } = req.body;
         const { id: userId , username } = req.authUser;
-        const { cardId } = req.params;
         let { removeGalleryPics } = req.body;
         removeGalleryPics= JSON.parse(removeGalleryPics)
 
@@ -174,7 +174,7 @@ export const updateCard = async (req, res, next) => {
         const galleryDocFiles = req.files['gallery'] || [];
 
         // Find the card
-        const card = await prisma.card.findUnique({ where: { id: parseInt(cardId), username } });
+        const card = await prisma.card.findFirst({ where: { username } });
         if (!card) {
             return res.status(404).json({ message: 'Card not found' });
         }
@@ -270,6 +270,7 @@ export const updateCard = async (req, res, next) => {
             role: role || card.role,
             category: category || card.category,
             phoneNumber: phoneNumber || card.phoneNumber,
+            customFields: customFields || card.customFields,
             profilePic: profilePicUrl,
             coverPic: coverPicUrl,
             cv: cvUrl,
@@ -318,7 +319,8 @@ export const updateCard = async (req, res, next) => {
                 profilePic: updatedCard.profilePic,
                 coverPic: updatedCard.coverPic,
                 gallery: updatedCard.gallery,
-                cv: cvUrl,
+                customFields: updatedCard.customFields,
+                cv: updatedCard.cv,
                 updatedAt: updatedCard.updatedAt,
                 social: updatedSocial
             }
