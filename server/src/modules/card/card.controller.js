@@ -494,7 +494,7 @@ export const getCardById = async (req, res, next) => {
     if( authenticatedId){
         authenticatedId = parseInt(authenticatedId)
         
-        isFollowed = await prisma.follow.findUnique({where:{followerId:authenticatedId, followingId:user.id}})
+        isFollowed = await prisma.follow.findFirst({where:{followerId:authenticatedId, followingId:user.id}})
         if(!isFollowed){
             isFollowed = false
         }else{
