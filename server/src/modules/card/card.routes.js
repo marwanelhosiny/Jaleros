@@ -34,6 +34,7 @@ router.delete('/:cardId', validationFunction(deleteCardSchema) ,auth(), expressA
 
 
 
+router.post('/rate/:cardId', auth(), expressAsyncHandler(cc.rateCard))
 
 
 

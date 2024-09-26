@@ -35,6 +35,10 @@ model User {
   // Follow relationships
   following Follow[] @relation("FollowingRelation") // Users this user is following
   followers Follow[] @relation("FollowerRelation")  // Users that follow this user
+
+  //rating relationship
+  rating Rate[] @relation("ratingRelation") 
+
 }
 
 model Follow {
@@ -66,7 +70,8 @@ model Card {
   userId      Int?
   username    String      @unique
   name        String   @default("Unnamed Card") 
-  rate        Int
+  rate        Float      @default(0)
+  ratedTimes  Int?     @default(0)      
   phoneNumber String?
   email       String?
   country     String?   
@@ -94,6 +99,9 @@ model Card {
 
     // Foreign key relation for userId
   userById      User? @relation("UserIdRelation",fields: [userId], references: [id]) // Reference to User's id
+
+  // rating relation
+  rated Rate[] @relation("ratingRelation") 
 
 
 
@@ -130,5 +138,21 @@ model Social {
 
   // Index on the foreign key for performance
   @@index([cardId])
+}
+
+model Rate {
+  id          Int    @id @default(autoincrement())
+  userId  Int    
+  cardId Int    
+  rate   Int     @default(0)
+
+  // Relationships
+  rating    User   @relation("ratingRelation", fields: [userId], references: [id])
+  rated   Card   @relation("ratingRelation", fields: [cardId], references: [id])
+
+  // Unique constraint to ensure a user can't follow the same person twice
+  @@unique([userId, cardId])
+
+
 }
 

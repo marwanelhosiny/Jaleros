@@ -417,42 +417,60 @@ export const getCards = async (req, res, next) => {
 //================================================ get sponsored cards ========================================//
 
 export const sponsoredCards = async (req, res, next) => {
+    let { authenticatedId } = req.body;
 
-        // Find sponsored cards
-        const cards = await prisma.card.findMany({
-            where: { sponsored: true },
-            include: { social: true }
-        });
+    // Find sponsored cards
+    const cards = await prisma.card.findMany({
+        where: { sponsored: true },
+        include: { social: true }
+    });
 
-        // Prepare an array to store cards with follower and following counts
-        const cardsWithCounts = await Promise.all(cards.map(async (card) => {
-            // Get user info using the username in the card
-            const user = await prisma.user.findUnique({ where: { username: card.username } });
-            if (!user) {
-                // If user not found, return the card without follower/following counts
-                return { ...card, Followers: 0, Following: 0 };
-            }
+    // Prepare an array to store cards with follower and following counts, plus the isFollowed flag
+    const cardsWithCounts = await Promise.all(cards.map(async (card) => {
+        // Get user info using the username in the card
+        const user = await prisma.user.findUnique({ where: { username: card.username } });
+        if (!user) {
+            // If user not found, return the card without follower/following counts and isFollowed as false
+            return { ...card, Followers: 0, Following: 0, isFollowed: false };
+        }
 
-            // Get followers and following counts
-            const [theFollowers, theFollowing] = await Promise.all([
-                prisma.follow.findMany({ where: { followingId: user.id }, select: { followerId: true } }),
-                prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
-            ]);
+        // Get followers and following counts
+        const [theFollowers, theFollowing] = await Promise.all([
+            prisma.follow.findMany({ where: { followingId: user.id }, select: { followerId: true } }),
+            prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
+        ]);
 
-            const Followers = theFollowers.length;
-            const Following = theFollowing.length;
+        const Followers = theFollowers.length;
+        const Following = theFollowing.length;
 
-            // Return card with followers and following counts
-            return {
-                ...card,
-                Followers,
-                Following
-            };
-        }));
+        // If authenticatedId is provided, check if the authenticated user is following the card's user
+        let isFollowed = false;
+        if (authenticatedId) {
+            authenticatedId = parseInt(authenticatedId);
+            const isFollowedByAuthenticatedUser = await prisma.follow.findUnique({
+                where: {
+                    followerId_followingId: {
+                        followerId: authenticatedId,  // Check if authenticated user is following the card's user
+                        followingId: user.id,
+                    }
+                }
+            });
+            isFollowed = !!isFollowedByAuthenticatedUser; // True if the authenticated user is following
+        }
 
-        res.status(200).json({ message: 'Cards fetched successfully', cards: cardsWithCounts });
+        // Return card with followers, following counts, and isFollowed flag
+        return {
+            ...card,
+            Followers,
+            Following,
+            isFollowed
+        };
+    }));
 
+    res.status(200).json({ message: 'Cards fetched successfully', cards: cardsWithCounts });
 };
+
+
 
 
 //================================================ get one card =================================================//
@@ -460,11 +478,28 @@ export const sponsoredCards = async (req, res, next) => {
 export const getCardById = async (req, res, next) => {
     
     const { username } = req.params
+    let { authenticatedId } = req.body;
 
+    
+    
+    
     // Get user info 
     const user = await prisma.user.findUnique({where:{username}})
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // check if authenticated user follows
+    let isFollowed = false;
+    if( authenticatedId){
+        authenticatedId = parseInt(authenticatedId)
+        
+        isFollowed = await prisma.follow.findUnique({where:{followerId:authenticatedId, followingId:user.id}})
+        if(!isFollowed){
+            isFollowed = false
+        }else{
+            isFollowed = true
+        }
     }
 
     //get followers
@@ -486,7 +521,7 @@ export const getCardById = async (req, res, next) => {
         return res.status(404).json({ message: 'Card not found' });
     }
     
-    res.status(200).json({ message: 'Card fetched successfully', card:{...card , Followers , Following} });
+    res.status(200).json({ message: 'Card fetched successfully', card:{...card , Followers , Following , isFollowed} });
 
 }
 
@@ -515,3 +550,67 @@ export const getMyCards = async (req, res, next) => {
 
 }
 
+//====================================== rate =============================//
+
+export const rateCard = async (req, res, next) => {
+    const { id: userId } = req.authUser;
+    let { cardId } = req.params;
+    let {  rate } = req.body;
+    cardId = parseInt(cardId)
+    rate = parseInt(rate)
+
+    // check if card is exists
+    const card = await prisma.card.findUnique({
+        where: {
+            id: cardId
+        }
+    })
+
+    if (!card) {
+        return res.status(404).json({ error: "Card not found" })
+    }
+
+
+    // check if the user has already rated
+
+    const existingRate = await prisma.rate.findUnique({
+        where: {
+            userId_cardId: {
+                userId,
+                cardId,
+            },
+        }
+    })
+
+    if (existingRate) {
+        const updateRate = await prisma.rate.update({
+            where: {
+                userId_cardId: {
+                    userId,
+                    cardId,
+                },
+            },
+            data: {
+                rate,
+            },
+        })
+    }
+    else {
+        const rateCard = await prisma.rate.create({ data: { userId, cardId, rate } })
+    }
+
+    let ratedTimes = card.ratedTimes + 1
+    let rating = (card.rate * card.ratedTimes + rate) / ratedTimes
+
+    const updateCard = await prisma.card.update({
+        where: {
+            id: cardId,
+        },
+        data: {
+            ratedTimes,
+            rate: rating
+        },
+    })
+
+    return res.status(200).json({ message: "Rated" })
+}

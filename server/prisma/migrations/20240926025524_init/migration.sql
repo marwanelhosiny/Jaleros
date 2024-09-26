@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Card" ADD COLUMN     "ratedTimes" INTEGER DEFAULT 0,
+ALTER COLUMN "rate" SET DEFAULT 0;
