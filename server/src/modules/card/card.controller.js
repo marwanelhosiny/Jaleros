@@ -445,7 +445,7 @@ export const sponsoredCards = async (req, res, next) => {
 
         // If authenticatedId is provided, check if the authenticated user is following the card's user
         let isFollowed = false;
-        if (authenticatedId != null && authenticatedId != undefined && authenticatedId != "undefined")  {  {
+        if (authenticatedId != null && authenticatedId != undefined && authenticatedId != "undefined") {
             authenticatedId = parseInt(authenticatedId);
             const isFollowedByAuthenticatedUser = await prisma.follow.findUnique({
                 where: {

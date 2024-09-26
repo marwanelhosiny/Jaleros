@@ -33,7 +33,8 @@ function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
   const [page, setPage] = useState("1");
-  const { loading, setLoading, LoginFirstHandler , user } = useGlarusContext();
+  const { loading, setLoading, LoginFirstHandler  } = useGlarusContext();
+  const {id} = JSON.parse(localStorage.user)
   const navigate = useNavigate();
   const { token } = localStorage;
   const [open, setOpen] = useState({
@@ -58,7 +59,9 @@ function Home() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${user?.id})`);
+      console.log(id);
+      
+      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${id})`);
       setSponserdCards(data?.cards);
       const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);
       setCards(Arr?.cards);

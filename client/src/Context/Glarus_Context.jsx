@@ -9,7 +9,7 @@ export const GlarusProvider = ({ children }) => {
   const toast = useToast();
 
   // user Info
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState();
   // user Info
 
   // notifications
