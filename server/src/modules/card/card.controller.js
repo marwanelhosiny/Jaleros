@@ -417,7 +417,13 @@ export const getCards = async (req, res, next) => {
 //================================================ get sponsored cards ========================================//
 
 export const sponsoredCards = async (req, res, next) => {
-    let { authenticatedId } = req.query;
+    // Extract and attempt to convert authenticatedId to an integer
+    let authenticatedId = req.query.authenticatedId ? parseInt(req.query.authenticatedId) : null;
+
+    // If authenticatedId is not a valid integer, set it to null
+    if (!Number.isInteger(authenticatedId)) {
+        authenticatedId = null;
+    }
 
     // Find sponsored cards
     const cards = await prisma.card.findMany({
@@ -443,14 +449,13 @@ export const sponsoredCards = async (req, res, next) => {
         const Followers = theFollowers.length;
         const Following = theFollowing.length;
 
-        // If authenticatedId is provided, check if the authenticated user is following the card's user
+        // Check if the authenticated user is following the card's user, if authenticatedId is valid
         let isFollowed = false;
-        if (authenticatedId != null && authenticatedId != undefined && authenticatedId != "undefined") {
-            authenticatedId = parseInt(authenticatedId);
+        if (authenticatedId) {
             const isFollowedByAuthenticatedUser = await prisma.follow.findUnique({
                 where: {
                     followerId_followingId: {
-                        followerId: authenticatedId,  // Check if authenticated user is following the card's user
+                        followerId: authenticatedId,
                         followingId: user.id,
                     }
                 }
@@ -476,54 +481,52 @@ export const sponsoredCards = async (req, res, next) => {
 //================================================ get one card =================================================//
 
 export const getCardById = async (req, res, next) => {
-    
-    const { username } = req.params
+    const { username } = req.params;
     let { authenticatedId } = req.query;
 
-    
-    
-    
-    // Get user info 
-    const user = await prisma.user.findUnique({where:{username}})
+    // Convert authenticatedId to an integer and validate it
+    authenticatedId = authenticatedId ? parseInt(authenticatedId) : null;
+    if (!Number.isInteger(authenticatedId)) {
+        authenticatedId = null;
+    }
+
+    // Get user info by username
+    const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
-    
-    // check if authenticated user follows
+
+    // Check if authenticated user follows the target user
     let isFollowed = false;
-    if( authenticatedId != null && authenticatedId != undefined && authenticatedId != "undefined"){
-        authenticatedId = parseInt(authenticatedId)
-        
-        isFollowed = await prisma.follow.findFirst({where:{followerId:authenticatedId, followingId:user.id}})
-        if(!isFollowed){
-            isFollowed = false
-        }else{
-            isFollowed = true
-        }
+    if (authenticatedId) {
+        const followRecord = await prisma.follow.findFirst({
+            where: { followerId: authenticatedId, followingId: user.id }
+        });
+        isFollowed = !!followRecord;  // True if the authenticated user is following
     }
 
-    //get followers
-
+    // Get followers and following counts
     const [theFollowers, theFollowing] = await Promise.all([
         prisma.follow.findMany({ where: { followingId: user.id }, select: { followerId: true } }),
         prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
     ]);
 
-    const Followers = theFollowers.length
-    const Following = theFollowing.length
+    const Followers = theFollowers.length;
+    const Following = theFollowing.length;
 
-
-
-
-    // find card
-    const card = await prisma.card.findUnique({ where: { username }  , include:{social:true}});
+    // Find card by username
+    const card = await prisma.card.findUnique({ where: { username }, include: { social: true } });
     if (!card) {
         return res.status(404).json({ message: 'Card not found' });
     }
-    
-    res.status(200).json({ message: 'Card fetched successfully', card:{...card , Followers , Following , isFollowed} });
 
-}
+    // Return card details along with followers, following, and isFollowed flag
+    res.status(200).json({
+        message: 'Card fetched successfully',
+        card: { ...card, Followers, Following, isFollowed }
+    });
+};
+
 
 //================================================ getMyCards ==========================================//
 
