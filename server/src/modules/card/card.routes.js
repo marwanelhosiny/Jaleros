@@ -22,7 +22,7 @@ router.put('/', multermiddleLocal(allowedExtensions.Image).fields([
     { name: 'coverPic', maxCount: 1 },
     { name: 'cv', maxCount: 1 },
     { name: 'gallery', maxCount: 5 }
-]),validationFunction(updateCardSchema),auth() , expressAsyncHandler(cc.createCard))
+]),validationFunction(updateCardSchema),auth() , expressAsyncHandler(cc.updateCard))
 
 router.get('/sponsored',  expressAsyncHandler(cc.sponsoredCards))
 router.get('/myCards', auth(), expressAsyncHandler(cc.getMyCards))

@@ -307,6 +307,7 @@ export const updateCard = async (req, res, next) => {
             card: {
                 id: updatedCard.id,
                 username: updatedCard.username,
+                userId: updatedCard.userId,
                 name: updatedCard.name,
                 email: updatedCard.email,
                 phoneNumber: updatedCard.phoneNumber,
