@@ -133,12 +133,13 @@ function AddEditCard({ typePage }) {
   };
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id == "about" && value.length > 160) return toast({
-      duration : 4000 ,
-      isClosable : true ,
-      title : t("Maximum 160 character"),
-      position : "top"
-    }) ;
+    if (id == "about" && value.length > 160)
+      return toast({
+        duration: 4000,
+        isClosable: true,
+        title: t("Maximum 160 character"),
+        position: "top",
+      });
     setData((prev) => {
       return {
         ...prev,
@@ -276,6 +277,7 @@ function AddEditCard({ typePage }) {
   };
 
   useEffect(() => {
+    if (!token) navigate("/");
     username && getCard();
   }, []);
   return (

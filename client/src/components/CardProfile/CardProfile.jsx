@@ -58,10 +58,11 @@ function CardProfile({ card, forPreview = false }) {
   const [givenRate, setGivenRate] = useState(1);
   const [customFields, setCustomFields] = useState([]);
   const [mode, setMode] = useState(localStorage.modeCard || "default");
+  const [toggle, setToggle] = useState(card?.isFollowed);
   const navigate = useNavigate();
   const toast = useToast();
   const { direction, token } = localStorage;
-  const { loading, setLoading } = useGlarusContext();
+  const { setLoading } = useGlarusContext();
   const handleSocialLinks = () => {
     const social = card?.social;
     for (const key in social) {
@@ -82,7 +83,7 @@ function CardProfile({ card, forPreview = false }) {
     }
   };
   const handleCustomFileds = () => {
-    const Data = JSON.parse(card?.customFields);
+    if (card) var Data = JSON.parse(card?.customFields);
     for (const key in Data) {
       if (Data[key].name != null && Data[key].link != null) {
         setCustomFields((prev) => [
@@ -159,14 +160,17 @@ function CardProfile({ card, forPreview = false }) {
   };
 
   const handleFollowUnFollow = async () => {
-    if (!token)
-      return toast({
+    if (!token) {
+      toast({
         isClosable: true,
         position: "top",
         duration: 3000,
         title: t("Login First"),
         status: "info",
       });
+      navigate("/");
+      return;
+    }
     try {
       setLoading(true);
       await apiAxios.post(
@@ -181,7 +185,17 @@ function CardProfile({ card, forPreview = false }) {
         title: t("Successful Operation"),
         status: "success",
       });
-    } catch (e) {}
+      setToggle(!toggle);
+    } catch (e) {
+      const { error } = e?.response?.data;
+      toast({
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+        title: t(error),
+        status: "error",
+      });
+    }
     setLoading(false);
   };
 
@@ -306,7 +320,7 @@ function CardProfile({ card, forPreview = false }) {
               <p>{card?.rate || "4.5"}</p>
             </div>
             {forPreview ? (
-              card?.isFollowed ? (
+              toggle ? (
                 <button className="normal" onClick={handleFollowUnFollow}>
                   {t("UnFollow")}
                 </button>

@@ -58,9 +58,7 @@ function Home() {
   };
   useEffect(() => {
     (async () => {
-      setLoading(true);
-      console.log(id);
-      
+      setLoading(true);      
       const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${token ? id : undefined})`);
       setSponserdCards(data?.cards);
       const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);

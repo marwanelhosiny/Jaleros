@@ -10,7 +10,7 @@ import CardProfile from "../../components/CardProfile/CardProfile";
 function PreviewCard() {
   const { userName } = useParams();
   const [card, setCard] = useState();
-  const { loading, setLoading, user } = useGlarusContext();
+  const { loading, setLoading } = useGlarusContext();
   const {id} = JSON.parse(localStorage.user)
   const {token} = localStorage
   

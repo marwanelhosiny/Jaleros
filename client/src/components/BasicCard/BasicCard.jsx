@@ -34,7 +34,7 @@ const baseProfile =
 function BasicCard({ card, forPreview = false }) {
   const [socialLinks, setSocialLinks] = useState([]);
   const [customFields, setCustomFields] = useState([]);
-  const {token} = localStorage
+  const { token } = localStorage;
   const navigate = useNavigate();
   const toast = useToast();
   const handleSocialLinks = () => {
@@ -57,7 +57,7 @@ function BasicCard({ card, forPreview = false }) {
     }
   };
   const handleCustomFileds = () => {
-    const Data = JSON.parse(card?.customFields);
+    if (card) var Data = JSON.parse(card?.customFields);
     for (const key in Data) {
       if (Data[key].name != null && Data[key].link != null) {
         setCustomFields((prev) => [
@@ -86,14 +86,17 @@ function BasicCard({ card, forPreview = false }) {
   };
 
   const handleFollowUnFollow = async () => {
-    if (!token)
-      return toast({
+    if (!token) {
+      toast({
         isClosable: true,
         position: "top",
         duration: 3000,
         title: t("Login First"),
         status: "info",
       });
+      navigate("/");
+      return;
+    }
     try {
       setLoading(true);
       await apiAxios.post(
@@ -108,7 +111,17 @@ function BasicCard({ card, forPreview = false }) {
         title: t("Successful Operation"),
         status: "success",
       });
-    } catch (e) {}
+      setToggle(!toggle);
+    } catch (e) {
+      const { error } = e?.response?.data;
+      toast({
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+        title: t(error),
+        status: "error",
+      });
+    }
     setLoading(false);
   };
 
@@ -141,7 +154,7 @@ function BasicCard({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <Link target="blank" to={`https://jaleros.com/${card.username}`}>
+              <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
                 {card?.name || "Jemy"}
               </Link>
               <h3>{card?.role || "FullStack Developer"}</h3>

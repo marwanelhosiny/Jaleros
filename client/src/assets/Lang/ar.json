@@ -179,5 +179,6 @@
   "Give it at least 1 star": "يجب ان يكون التقييم نجمة علي الاقل",
   "Please login Again": "سجل دخول مجددا",
   "Login First": "تسجيل الدخول اولا" ,
-  "Maximum 160 character" : "160 حرف كحد اقصي"
+  "Maximum 160 character" : "160 حرف كحد اقصي" ,
+  "You can't follow yourself" : "لا تستطيع متابعة نفسك"
 }
