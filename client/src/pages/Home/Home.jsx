@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./home.scss";
 import { t } from "i18next";
-import search from "../../assets/images/Home/search.png";
+import searchimg from "../../assets/images/Home/search.png";
 import blackBall from "../../assets/images/Home/blackBall.png";
 import blackHeart from "../../assets/images/Home/blackHeart.png";
 import blackPause from "../../assets/images/Home/blackPause.png";
@@ -27,13 +27,26 @@ import TopRatedBox from "../../components/topRatedBox/TopRatedBox";
 import { useNavigate } from "react-router-dom";
 import CardProfile from "../../components/CardProfile/CardProfile";
 import BasicCard from "../../components/BasicCard/BasicCard";
-import { getUserData } from "../../utils/Commn";
+import { Categories, getUserData } from "../../utils/Commn";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
   const [page, setPage] = useState("1");
+  const [lengthCards, setLengthCards] = useState();
   const { loading, setLoading, LoginFirstHandler } = useGlarusContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const { token } = localStorage;
   const [open, setOpen] = useState({
@@ -43,7 +56,14 @@ function Home() {
     four: false,
     five: false,
   });
-  const user = getUserData()
+  const [search, setSearch] = useState({
+    name: "",
+    city: "",
+    country: "",
+  });
+  const [category, setCategory] = useState("");
+  const user = getUserData();
+  const allRef = useRef();
   const handleActive = (e) => {
     const { id } = e.target;
     setOpen((prev) => {
@@ -56,20 +76,69 @@ function Home() {
       };
     });
   };
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setSearch((prev) => {
+      return {
+        ...prev,
+        [id]: value,
+      };
+    });
+  };
+  const handleChangeCategory = (e) => {
+    const { value } = e.target.dataset;
+    setCategory(value);
+    const { childNodes } = e.target.parentElement;
+    childNodes.forEach((ele) => {
+      ele.classList.remove("active");
+    });
+    e.target.classList.add("active");
+  };
+
+  const getCards = async () => {
+    try {
+      setLoading(true);
+      const { name, city, country } = search;
+      const { data } = await apiAxios.post(
+        `card/search/?limit=6&page=${page}`,
+        {
+          name,
+          city,
+          country,
+          category,
+        }
+      );
+      setCards(data?.cards);
+      setSearch({
+        name : "",
+        city : "" ,
+        country : ""
+      })
+      setCategory("")
+      onClose();
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  const closeFilter = () => {
+    setCategory("");
+    onClose();
+  };
+
   useEffect(() => {
     (async () => {
       setLoading(true);
       const { data } = await apiAxios.get(
-        `card/sponsored/?authenticatedId=${
-          token ? user?.id : undefined
-        }`
+        `card/sponsored/?authenticatedId=${token ? user?.id : undefined}`
       );
       setSponserdCards(data?.cards);
-      const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);
-      setCards(Arr?.cards);
       setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    getCards();
+  }, [page]);
 
   return (
     <div className="home">
@@ -144,14 +213,6 @@ function Home() {
           >
             {t("Create Now")}
           </button>
-          <div className="search">
-            <div className="quick">
-              <img src={search} alt="" loading="lazy" />
-              <p>{t("Quick Search")}</p>
-            </div>
-            <input type="text" placeholder={t("Search By Name")} />
-                  <img src={filter} alt="" loading="lazy" className="filter" />
-          </div>
         </div>
         <div className="sponserd">
           <h1>{t("Sponsored")}</h1>
@@ -159,15 +220,35 @@ function Home() {
             <div className="grid">
               {sponserdCards.map((card) => {
                 return card?.type == "basic" ? (
-                  <BasicCard card={card} forPreview={true} />
+                  <BasicCard card={card} forPreview={true} key={card.id} />
                 ) : (
-                  <CardProfile card={card} forPreview={true} />
+                  <CardProfile card={card} forPreview={true} key={card.id} />
                 );
               })}
             </div>
           ) : (
             <div className="msg">{t("No sponserd Cards Yet")}</div>
           )}
+        </div>
+        <div className="search">
+          <div className="quick">
+            <img src={searchimg} alt="" loading="lazy" onClick={getCards} />
+            <p>{t("Quick Search")}</p>
+          </div>
+          <input
+            type="text"
+            placeholder={t("Search By Name")}
+            id="name"
+            value={search.name}
+            onChange={(e) => handleChange(e)}
+          />
+          <img
+            src={filter}
+            alt=""
+            loading="lazy"
+            className="filter"
+            onClick={onOpen}
+          />
         </div>
         <div className="topRated">
           <h1>{t("Top Rated")}</h1>
@@ -411,6 +492,71 @@ function Home() {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onClose={closeFilter} isCentered>
+        <ModalOverlay />
+        <ModalContent className="popUpFilter">
+          <ModalHeader>
+            <h1>{t("Cards Filter")}</h1>
+            <p
+              onClick={() => {
+                setSearch({
+                  name: "",
+                  city: "",
+                  country: "",
+                });
+                setCategory("");
+                allRef.current.childNodes.forEach((ele) => {
+                  ele.classList.remove("active");
+                });
+              }}
+            >
+              {t("Reset all")}
+            </p>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="location">
+              <h3>{t("Location")}</h3>
+              <div className="inputs">
+                <input
+                  type="text"
+                  placeholder={t("Search by country")}
+                  id="country"
+                  value={search.country}
+                  onChange={(e) => handleChange(e)}
+                />
+                <input
+                  type="text"
+                  placeholder={t("Search by city")}
+                  id="city"
+                  value={search.city}
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+            </div>
+            <div className="categories">
+              <h3>{t("Category")}</h3>
+              <div className="all" ref={allRef}>
+                {Categories.map((cate, i) => {
+                  return (
+                    <div
+                      className="cate"
+                      key={i}
+                      onClick={(e) => handleChangeCategory(e)}
+                      data-value={cate.value}
+                    >
+                      {cate.name}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="search">
+                <button onClick={getCards}>{t("Search")}</button>
+              </div>
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       {loading && <Loader />}
     </div>
   );

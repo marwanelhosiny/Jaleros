@@ -162,7 +162,7 @@ function BasicCard({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <Link target="blank" to={`http://localhost/${card?.username}`}>
+              <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
                 {card?.name || "Jemy"}
               </Link>
               <h3>{card?.role || "FullStack Developer"}</h3>

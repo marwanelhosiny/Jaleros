@@ -16,14 +16,14 @@ function TopRatedBox({ card }) {
           <img src={card?.profilePic || baseSrc} alt="" loading="lazy" />
         </Link>
         <div className="con">
-          <h1>{card?.title || "Jemy"}</h1>
+          <h1>{card?.name || "Jemy"}</h1>
           <h3>{card?.role || "FullStack Developer"}</h3>
         </div>
       </div>
       <div className="about">
         <p>{card?.about}</p>
       </div>
-      <img src={plusBall} alt="" className="plus" />
+      {/* <img src={plusBall} alt="" className="plus" /> */}
       <div className="rate">
         <p>{card?.rate || "4.5"}</p>
         <div className="flexer">

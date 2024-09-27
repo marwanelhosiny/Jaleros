@@ -178,7 +178,14 @@
   "Rate this card": "قيم هذه البطاقة",
   "Give it at least 1 star": "يجب ان يكون التقييم نجمة علي الاقل",
   "Please login Again": "سجل دخول مجددا",
-  "Login First": "تسجيل الدخول اولا" ,
-  "Maximum 160 character" : "160 حرف كحد اقصي" ,
-  "You can't follow yourself" : "لا تستطيع متابعة نفسك"
+  "Login First": "تسجيل الدخول اولا",
+  "Maximum 160 character": "160 حرف كحد اقصي",
+  "You can't follow yourself": "لا تستطيع متابعة نفسك",
+  "Search": "بحث",
+  "Location": "الموقع",
+  "Cards Filter": "فلاتر البطاقات",
+  "Reset all": "ارجاع الكل",
+  "Search by country": "البحث بالبلد",
+  "Search by city": "البحث بالمدينة" ,
+  "cover Photo 400px width by 100px height for best display quality" : "صورة الغلاف بعرض 400 بكسل وارتفاع 100 بكسل للحصول على أفضل جودة للعرض"
 }

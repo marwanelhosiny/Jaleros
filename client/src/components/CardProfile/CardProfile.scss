@@ -193,6 +193,9 @@
         }
       }
       .part-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
         .rate {
           display: flex;
           justify-content: center;
@@ -208,6 +211,7 @@
             border: none;
             outline: none;
             color: #233545;
+            width: 250px;
             font-weight: 700;
             &.white {
               background-color: #233545 !important;
@@ -239,17 +243,13 @@
           }
         }
         button.normal {
-          width: 90.25px;
-          height: 33.506px;
+          width: fit-content;
+          padding: 2px 5px;
+          height: 28px;
           background-color: #fff;
           border-radius: 7px;
           color: #233545;
           font-weight: bold;
-          @media screen and (max-width: 600px) {
-            width: fit-content;
-            padding: 8px 10px;
-            height: auto;
-          }
         }
       }
     }

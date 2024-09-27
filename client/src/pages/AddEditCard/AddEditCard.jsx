@@ -352,7 +352,7 @@ function AddEditCard({ typePage }) {
             <StackForm
               stackType={"input"}
               idInput={"coverPic"}
-              label={t("cover Photo")}
+              label={t("cover Photo 400px width by 100px height for the best display quality")}
               typeInput={"file"}
               onChangeInput={handleMainPicsChange}
             />

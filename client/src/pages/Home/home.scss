@@ -45,14 +45,14 @@ body.ar {
           font-weight: 400;
           line-height: normal;
         }
-        .search {
-          .quick {
-            p {
-              left: auto;
-              right: 0%;
-              font-family: Georgia, "Times New Roman", Times, serif;
-              font-size: 14px;
-            }
+      }
+      .search {
+        .quick {
+          p {
+            left: auto;
+            right: 0%;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            font-size: 14px;
           }
         }
       }
@@ -78,12 +78,12 @@ body.ar {
         }
       }
       .con {
-       & > p {
+        & > p {
           width: 100% !important;
         }
-        .search {
-          width: 100% !important;
-        }
+      }
+      .search {
+        width: 100% !important;
       }
     }
     .main {
@@ -240,37 +240,37 @@ body.ar {
         background: #233545;
         color: #fff;
       }
-      .search {
-        margin: 30px 0px;
-        width: 50%;
-        display: flex;
-        padding: 0px 10px;
-        align-items: center;
-        border-radius: 8px;
-        border: 1px solid #a7a6a6;
-        input {
-          padding: 15px;
-          flex-grow: 1;
-          border: none;
-          outline: none;
-        }
-        img {
-          cursor: pointer;
-        }
-        .filter {
-        }
-        .quick {
-          position: relative;
-          p {
-            position: absolute;
-            top: -25px;
-            left: 0px;
-            margin: 0%;
-            width: 120px;
-            font-size: 12px;
-            background-color: #fff;
-            text-align: center;
-          }
+    }
+    .search {
+      margin: 30px 0px;
+      width: 50%;
+      display: flex;
+      padding: 0px 10px;
+      align-items: center;
+      border-radius: 8px;
+      border: 1px solid #a7a6a6;
+      input {
+        padding: 15px;
+        flex-grow: 1;
+        border: none;
+        outline: none;
+      }
+      img {
+        cursor: pointer;
+      }
+      .filter {
+      }
+      .quick {
+        position: relative;
+        p {
+          position: absolute;
+          top: -25px;
+          left: 0px;
+          margin: 0%;
+          width: 120px;
+          font-size: 12px;
+          background-color: #fff;
+          text-align: center;
         }
       }
     }
@@ -359,7 +359,7 @@ body.ar {
         font-style: normal;
         font-weight: 600;
         margin-bottom: 10px;
-        line-height: 44px; 
+        line-height: 44px;
       }
       & > p {
         color: #000;

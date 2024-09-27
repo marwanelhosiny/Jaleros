@@ -96,18 +96,14 @@
         height: 22px;
         cursor: pointer;
       }
-      button {
-        width: 80px;
-        height: 33.506px;
+      button{
+        width: fit-content;
+        padding: 2px 5px;
+        height: 28px;
         background-color: #fff;
         border-radius: 7px;
         color: #233545;
         font-weight: bold;
-        @media screen and (max-width: 600px) {
-          width: fit-content;
-          padding: 8px 10px;
-          height: auto;
-        }
       }
     }
     .links {
