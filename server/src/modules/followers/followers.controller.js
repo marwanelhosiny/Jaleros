@@ -39,7 +39,7 @@ export const follow = async (req,res,next)=> {
             },
         }
     })
-    console.log('her')
+
     
     if(existingFollow){
         const unfollow = await prisma.follow.delete({
@@ -52,15 +52,21 @@ export const follow = async (req,res,next)=> {
 })
         return res.status(200).json({message: "Unfollowed"})
     }
+    
+    const followUser = await prisma.follow.create({data:{followingId , followerId}})
+    
+    if(!followUser){
+        return res.status(500).json({error: "Failed to follow user"})
+    }
 
     // get followers
     const followers = await prisma.follow.findMany({
         where:{
-            followingId: followerId
+            followingId
         }
     })
 
-    const followUser = await prisma.follow.create({data:{followingId , followerId}})
+
     return res.status(200).json({message: "Followed", followers:followers.length})
 }
 
