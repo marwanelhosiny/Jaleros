@@ -392,7 +392,7 @@ export const getCards = async (req, res, next) => {
                     mode: 'insensitive',
                 },
                 category: {
-                    equals: category,  // Filter only for web development category
+                    contains: category,  // Filter only for web development category
                     mode: 'insensitive',
                 }
             },
