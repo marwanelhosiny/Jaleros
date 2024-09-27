@@ -53,7 +53,14 @@ export const follow = async (req,res,next)=> {
         return res.status(200).json({message: "Unfollowed"})
     }
 
+    // get followers
+    const followers = await prisma.user.findMany({
+        where:{
+            followingId: followerId
+        }
+    })
+
     const followUser = await prisma.follow.create({data:{followingId , followerId}})
-    return res.status(200).json({message: "Followed"})
+    return res.status(200).json({message: "Followed", followers:followers.length()})
 }
 
