@@ -54,7 +54,7 @@ export const follow = async (req,res,next)=> {
     }
 
     // get followers
-    const followers = await prisma.user.findMany({
+    const followers = await prisma.follow.findMany({
         where:{
             followingId: followerId
         }
