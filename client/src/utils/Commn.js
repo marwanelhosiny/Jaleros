@@ -5,7 +5,7 @@ export const generateUniqueString = ({
   length = 8,
 }) => {
   const nanoid = customAlphabet(signature, length);
-  return nanoid();
+  return `jemy${nanoid()}`;
 };
 
 export const Categories = [
@@ -37,4 +37,34 @@ export const Categories = [
     name: "Communication",
     value: "communication",
   },
+  {
+    name: "Network",
+    value: "Network",
+  },
+  {
+    name: "Content Creator",
+    value: "Content_Creator",
+  },
+  {
+    name: "Coding",
+    value: "Coding",
+  },
+  {
+    name: "UI/UX",
+    value: "UI/UX",
+  },
+  {
+    name: "Photography",
+    value: "Photography",
+  },
+  {
+    name: "Video Editors",
+    value: "Video_Editors",
+  },
 ];
+
+
+export const getUserData = ()=> {
+  const {user} = localStorage
+  return user ? JSON.parse(user) : "noObject"
+}

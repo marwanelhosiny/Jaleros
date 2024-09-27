@@ -34,6 +34,9 @@ const baseProfile =
 function BasicCard({ card, forPreview = false }) {
   const [socialLinks, setSocialLinks] = useState([]);
   const [customFields, setCustomFields] = useState([]);
+  const [toggle, setToggle] = useState();
+  const [followers, setFollowers] = useState();
+  const [following, setFollowing] = useState();
   const { token } = localStorage;
   const navigate = useNavigate();
   const toast = useToast();
@@ -128,6 +131,11 @@ function BasicCard({ card, forPreview = false }) {
   useEffect(() => {
     handleSocialLinks();
     handleCustomFileds();
+    if (card) {
+      setFollowers(card.Followers);
+      setFollowing(card.Following);
+      setToggle(card.isFollowed);
+    }
   }, [card]);
 
   return (
@@ -154,7 +162,7 @@ function BasicCard({ card, forPreview = false }) {
               </div>
             </div>
             <div className={`info`}>
-              <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
+              <Link target="blank" to={`http://localhost/${card?.username}`}>
                 {card?.name || "Jemy"}
               </Link>
               <h3>{card?.role || "FullStack Developer"}</h3>

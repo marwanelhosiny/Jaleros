@@ -78,7 +78,7 @@ body.ar {
         }
       }
       .con {
-        p {
+       & > p {
           width: 100% !important;
         }
         .search {
@@ -234,7 +234,7 @@ body.ar {
         font-weight: 400;
         width: 50%;
       }
-      button {
+      button.create {
         padding: 20px 35px;
         border-radius: 14px;
         background: #233545;

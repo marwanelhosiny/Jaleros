@@ -27,14 +27,13 @@ import TopRatedBox from "../../components/topRatedBox/TopRatedBox";
 import { useNavigate } from "react-router-dom";
 import CardProfile from "../../components/CardProfile/CardProfile";
 import BasicCard from "../../components/BasicCard/BasicCard";
-
+import { getUserData } from "../../utils/Commn";
 
 function Home() {
   const [sponserdCards, setSponserdCards] = useState([]);
   const [Cards, setCards] = useState([]);
   const [page, setPage] = useState("1");
-  const { loading, setLoading, LoginFirstHandler  } = useGlarusContext();
-  const {id} = JSON.parse(localStorage.user)
+  const { loading, setLoading, LoginFirstHandler } = useGlarusContext();
   const navigate = useNavigate();
   const { token } = localStorage;
   const [open, setOpen] = useState({
@@ -44,6 +43,7 @@ function Home() {
     four: false,
     five: false,
   });
+  const user = getUserData()
   const handleActive = (e) => {
     const { id } = e.target;
     setOpen((prev) => {
@@ -58,8 +58,12 @@ function Home() {
   };
   useEffect(() => {
     (async () => {
-      setLoading(true);      
-      const { data } = await apiAxios.get(`card/sponsored/?authenticatedId=${token ? id : undefined})`);
+      setLoading(true);
+      const { data } = await apiAxios.get(
+        `card/sponsored/?authenticatedId=${
+          token ? user?.id : undefined
+        }`
+      );
       setSponserdCards(data?.cards);
       const { data: Arr } = await apiAxios.get(`card/?limit=6&page=${page}`);
       setCards(Arr?.cards);
@@ -142,11 +146,11 @@ function Home() {
           </button>
           <div className="search">
             <div className="quick">
-            <img src={search} alt="" loading="lazy" />
-            <p>{t("Quick Search")}</p>
+              <img src={search} alt="" loading="lazy" />
+              <p>{t("Quick Search")}</p>
             </div>
             <input type="text" placeholder={t("Search By Name")} />
-            <img src={filter} alt="" loading="lazy" className="filter" />
+                  <img src={filter} alt="" loading="lazy" className="filter" />
           </div>
         </div>
         <div className="sponserd">

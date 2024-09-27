@@ -279,6 +279,7 @@ function Header() {
                     <MenuItem
                       onClick={async () => {
                         localStorage.removeItem("token");
+                        localStorage.removeItem("user");
                         if (
                           pathname.includes("Edit_Card") ||
                           pathname.includes("Create_Card")
@@ -400,7 +401,12 @@ function Header() {
                     <MenuItem
                       onClick={async () => {
                         localStorage.removeItem("token");
-                        if (pathname.includes("Edit_Card")) navigate("/");
+                        localStorage.removeItem("user");
+                        if (
+                          pathname.includes("Edit_Card") ||
+                          pathname.includes("Create_Card")
+                        )
+                          navigate("/");
                         location.reload();
                       }}
                     >

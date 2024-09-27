@@ -41,6 +41,8 @@ export const GlarusProvider = ({ children }) => {
           headers: { accesstoken: token },
         });
         setUser(data?.userData);
+        if (!localStorage.user)
+          localStorage.user = JSON.stringify(data?.userData);
       } catch (e) {
         const { message } = e?.response?.data;
         if (message == "authentication error :jwt expired") {
@@ -51,9 +53,9 @@ export const GlarusProvider = ({ children }) => {
             duration: 3000,
             title: t("Please login Again"),
           });
-          localStorage.removeItem("token")
-          location.href = "/"
-          location.reload()
+          localStorage.removeItem("token");
+          location.href = "/";
+          location.reload();
         }
       }
       setLoading(false);

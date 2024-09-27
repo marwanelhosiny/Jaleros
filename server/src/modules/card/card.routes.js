@@ -27,7 +27,7 @@ router.put('/', multermiddleLocal(allowedExtensions.Image).fields([
 router.get('/sponsored',  expressAsyncHandler(cc.sponsoredCards))
 router.get('/myCards', auth(), expressAsyncHandler(cc.getMyCards))
 router.get('/:username', validationFunction(getCardSchema) , expressAsyncHandler(cc.getCardById))
-router.get('/',  expressAsyncHandler(cc.getCards))
+router.post('/search',  expressAsyncHandler(cc.getCards))
 
 router.delete('/:cardId', validationFunction(deleteCardSchema) ,auth(), expressAsyncHandler(cc.deleteCard))
 

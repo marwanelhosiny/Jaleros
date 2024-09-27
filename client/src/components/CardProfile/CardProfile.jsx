@@ -58,7 +58,9 @@ function CardProfile({ card, forPreview = false }) {
   const [givenRate, setGivenRate] = useState(1);
   const [customFields, setCustomFields] = useState([]);
   const [mode, setMode] = useState(localStorage.modeCard || "default");
-  const [toggle, setToggle] = useState(card?.isFollowed);
+  const [followers, setFollowers] = useState();
+  const [following, setFollowing] = useState();
+  const [toggle, setToggle] = useState();
   const navigate = useNavigate();
   const toast = useToast();
   const { direction, token } = localStorage;
@@ -82,6 +84,7 @@ function CardProfile({ card, forPreview = false }) {
       }
     }
   };
+
   const handleCustomFileds = () => {
     if (card) var Data = JSON.parse(card?.customFields);
     for (const key in Data) {
@@ -173,7 +176,7 @@ function CardProfile({ card, forPreview = false }) {
     }
     try {
       setLoading(true);
-      await apiAxios.post(
+      const { data } = await apiAxios.post(
         `follow/${card?.userId}`,
         {},
         { headers: { accesstoken: token } }
@@ -185,6 +188,7 @@ function CardProfile({ card, forPreview = false }) {
         title: t("Successful Operation"),
         status: "success",
       });
+      setFollowers(data?.followers);
       setToggle(!toggle);
     } catch (e) {
       const { error } = e?.response?.data;
@@ -202,6 +206,11 @@ function CardProfile({ card, forPreview = false }) {
   useEffect(() => {
     handleSocialLinks();
     handleCustomFileds();
+    if (card) {
+      setFollowers(card.Followers);
+      setFollowing(card.Following);
+      setToggle(card.isFollowed);
+    }
   }, [card]);
 
   return (
@@ -214,7 +223,7 @@ function CardProfile({ card, forPreview = false }) {
           <div className="mega">
             <div className="pic">
               <div className="followers">
-                <p>{card?.Followers < 0 ? card?.Followers : "0"}</p>
+                <p>{followers || "0"}</p>
                 <p>{t("Followers")}</p>
               </div>
               <img
@@ -223,12 +232,12 @@ function CardProfile({ card, forPreview = false }) {
                 loading="lazy"
               />
               <div className="followers two">
-                <p>{card?.Following < 0 ? card?.Following : "0"}</p>
+                <p>{following || "0"}</p>
                 <p>{t("Following")}</p>
               </div>
             </div>
             <div className={`info`}>
-              <Link target="blank" to={`https://jaleros.com/${card?.username}`}>
+              <Link target="blank" to={`http://localhost/${card?.username}`}>
                 {card?.name || "Jemy"}
               </Link>
               <h3>{card?.role || "FullStack Developer"}</h3>
