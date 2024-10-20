@@ -77,18 +77,18 @@ export const signIn = async (req, res, next) => {
 
     //checking email accuaracy and changing status too
     const isExist = await prisma.user.findUnique({ 
-        where: { email, verified: true }  // change to email later
+        where: { email, verified: true , isActive:true }  // change to email later
      })
 
-    if (!isExist) { return next(new Error('invalid credentials or not verified yet', { cause: 400 })) }
+    if (!isExist) { return next(new Error('invalid credentials , suspended or not verified yet', { cause: 400 })) }
 
     //checking password accuaracy
     const checkPass = bcrypt.compareSync(password, isExist.password)
     if (!checkPass) { return next(new Error('invalid credentials', { cause: 400 })) }
 
     //creating token to send back in the response
-    const {  fullName, id } = isExist
-    const token = jwt.sign({ email,fullName , id }, process.env.ACCESSTOKEN_SECRET_KEY, { expiresIn: "1 d" })
+    const {  isAdmin,fullName, id } = isExist
+    const token = jwt.sign({ email,fullName , id , isAdmin}, process.env.ACCESSTOKEN_SECRET_KEY, { expiresIn: "1 d" })
 
     return res.status(200).json({ message: "you signed in successfully", token })
 }
@@ -207,3 +207,77 @@ export const deleteUser = async (req, res, next) => {
     return res.status(200).json({ messsage: "user deleted successsfully" })
 }
 
+
+//=========================== suspend User ===============================//
+
+export const delUser = async (req, res, next) => {
+    const { id } = req.params
+
+    //suspending user and returning updated document 
+    const updated = await prisma.user.delete({where: {id:parseInt(id)}})
+    if(!updated) { return next(new Error('user does not exist', { cause:400}))}
+
+    return res.status(200).json({ message: "user suspended successsfully" })
+}
+//=========================== suspend User ===============================//
+
+export const suspendUser = async (req, res, next) => {
+    const { id } = req.params
+
+    //suspending user and returning updated document 
+    const updated = await prisma.user.update({where: {id:parseInt(id)},data: {isActive: false}})
+    if(!updated) { return next(new Error('user does not exist', { cause:400}))}
+
+    return res.status(200).json({ message: "user suspended successsfully" })
+}
+
+//=========================== unsuspend User ===============================//
+
+export const unsuspendUser = async (req, res, next) => {
+    const { id } = req.params
+
+    //unsuspending user and returning updated document 
+    const updated = await prisma.user.update({where: {id:parseInt(id)},data: {isActive: true}})
+    if(!updated) { return next(new Error('user does not exist', { cause:400}))}
+
+    return res.status(200).json({ message: "user unsuspended successsfully" })
+}
+
+//================================================ get users ========================================//
+
+export const getUsers = async (req, res, next) => {
+
+    const { page = 1, limit = 6 } = req.query; // Default pagination values
+    const { name , username} = req.body;
+
+
+    // find cards with case-insensitive filtering for country, city, and name, sorted by rate
+    const users = await prisma.user.findMany({
+        where: {
+            fullName: {
+                contains: name,  // Case-insensitive partial match for name
+                mode: 'insensitive',
+            },
+            username: {
+                contains: username,  // Filter only for web development category
+                mode: 'insensitive',
+            }
+        },
+        orderBy: {
+            rate: 'desc',  // Sort by rate in descending order (higher rates first)
+        },
+        skip: (page - 1) * limit,  // For pagination
+        take: parseInt(limit),  // Limit number of results
+    });
+
+    const total = users.length
+
+    res.status(200).json({
+        message: 'users fetched successfully',
+        items:users,
+        page,
+        limit,
+        total
+    });
+
+};

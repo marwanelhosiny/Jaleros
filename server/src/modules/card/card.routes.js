@@ -30,7 +30,11 @@ router.get('/:username', validationFunction(getCardSchema) , expressAsyncHandler
 router.post('/search',  expressAsyncHandler(cc.getCards))
 
 router.delete('/:cardId', validationFunction(deleteCardSchema) ,auth(), expressAsyncHandler(cc.deleteCard))
+router.delete('/admin/:cardId', validationFunction(deleteCardSchema) ,auth(), expressAsyncHandler(cc.deleteCard))
 
+router.post('/ban/delete/:id', auth(true), expressAsyncHandler(cc.bandeleteCard))
+router.post('/ban/:id', auth(true), expressAsyncHandler(cc.hideCard))
+router.post('/unban/:id', auth(true), expressAsyncHandler(cc.unhideCard))
 
 
 

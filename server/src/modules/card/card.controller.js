@@ -416,7 +416,7 @@ export const getCards = async (req, res, next) => {
 };
 //================================================ get sponsored cards ========================================//
 
-export const sponsoredCards = async (req, res, next) => {
+/* export const sponsoredCards = async (req, res, next) => {
     // Extract and attempt to convert authenticatedId to an integer
     let authenticatedId = req.query.authenticatedId ? parseInt(req.query.authenticatedId) : null;
 
@@ -473,8 +473,37 @@ export const sponsoredCards = async (req, res, next) => {
     }));
 
     res.status(200).json({ message: 'Cards fetched successfully', cards: cardsWithCounts });
-};
+}; */
 
+
+export const sponsoredCards = async (req, res, next) => {
+
+    const { page = 1, limit = 3 } = req.query; // Default pagination values
+
+
+    // find cards with case-insensitive filtering for country, city, and name, sorted by rate
+    const cards = await prisma.card.findMany({
+        where: { sponsored: true },
+        include: {
+            social: true,  // Include the related 'social' data
+        },
+        orderBy: {
+            rate: 'desc',  // Sort by rate in descending order (higher rates first)
+        },
+        skip: (page - 1) * limit,  // For pagination
+        take: parseInt(limit),  // Limit number of results
+    });
+    const total = cards.length
+
+    res.status(200).json({
+        message: 'Cards fetched successfully',
+        items:cards,
+        page,
+        limit,
+        total
+    });
+
+};
 
 
 
@@ -618,4 +647,36 @@ export const rateCard = async (req, res, next) => {
 
     return res.status(200).json({ message: "Rated" })
     
+}
+
+//============================= hide card ===============================//
+
+export const hideCard = async (req, res, next) => {
+    const { id } = req.params
+    //hiding card and returning updated document
+    const updated = await prisma.card.update({ where: { id : parseInt(id) }, data: { hidden: true } })
+    if (!updated) { return next(new Error('card does not exist', { cause: 400 })) }
+
+    return res.status(200).json({message : "success"})
+}
+
+//============================= unhide card ===============================//
+
+export const unhideCard = async (req, res, next) => {
+    const { id } = req.params
+    //unhiding card and returning updated document
+    const updated = await prisma.card.update({ where: { id:parseInt(id) }, data: { hidden: false } })
+    if (!updated) { return next(new Error('card does not exist', { cause: 400 })) }
+
+    return res.status(200).json({ message: "success" })
+}
+//============================= unhide card ===============================//
+
+export const bandeleteCard = async (req, res, next) => {
+    const { id } = req.params
+    //unhiding card and returning updated document
+    const updated = await prisma.card.delete({ where: { id : parseInt(id) } })
+    if (!updated) { return next(new Error('card does not exist', { cause: 400 })) }
+
+    return res.status(200).json({ message: "success" })
 }

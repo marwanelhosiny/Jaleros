@@ -21,6 +21,8 @@ model User {
   email       String   @unique
   phoneNumber String?
   password    String
+  plan        String?
+  points      Int      @default(0)
   isAdmin     Boolean  @default(false)
   isActive    Boolean  @default(true)
   verified    Boolean  @default(false)
@@ -36,8 +38,14 @@ model User {
   following Follow[] @relation("FollowingRelation") // Users this user is following
   followers Follow[] @relation("FollowerRelation")  // Users that follow this user
 
+  // Subscription relationships
+  subscription Subscription[] @relation("UserSubscriptionRelation") // subscription this user is on
+
   //rating relationship
   rating Rate[] @relation("ratingRelation") 
+
+      // Relationships
+  planR   Plan?   @relation("userPlan", fields: [plan], references: [plan])
 
 }
 
@@ -103,6 +111,9 @@ model Card {
   // rating relation
   rated Rate[] @relation("ratingRelation") 
 
+    // Relationships
+  cat   Category?   @relation("cardCategory", fields: [category], references: [category])
+
 
 
   // Relation field
@@ -152,6 +163,69 @@ model Rate {
 
   // Unique constraint to ensure a user can't follow the same person twice
   @@unique([userId, cardId])
+
+
+}
+
+model Category {
+  id          Int    @id @default(autoincrement())
+  category  String   @unique
+
+    // Relationships
+  cards   Card[]   @relation("cardCategory")
+
+}
+
+
+
+model Plan {
+  id          Int    @id @default(autoincrement())
+  plan  String   @unique @default("basic")
+  description  String? 
+  price     Float   @default(0)
+  points    Int     @default(0)
+
+    // Relationships
+  users   User[]   @relation("userPlan")
+
+    subscription Subscription[] @relation("PlanSubscriptionRelation") // subscription this user is on
+
+
+
+}
+
+enum SubscriptionStatus {
+  pending
+  paid
+  failed
+}
+
+model Subscription{
+  id          Int    @id @default(autoincrement())
+  userId  Int 
+  planId  Int   
+  subscribedAt   DateTime @default(now())
+  subscribeEnd   DateTime
+
+  subscriptionStatus SubscriptionStatus @default(pending)
+
+  // Relationships
+  user   User   @relation("UserSubscriptionRelation", fields: [userId], references: [id])
+  plan   Plan   @relation("PlanSubscriptionRelation", fields: [planId], references: [id])
+
+  // Unique constraint to ensure a user can't supscribe the same person twice
+    // constraint
+@@unique([userId, planId])
+
+}
+
+model Blog{
+  id          Int    @id @default(autoincrement())
+  title     String
+  content     String?
+  pic         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
 
 }
