@@ -14,7 +14,7 @@ export const auth = (isAdmin=false) => {
             if (!verifiedToken || !verifiedToken.id) { return next(new Error('invalid token payload', { cause: 400 })) }
 
             //check if user has the required role
-            if (!verifiedToken.isAdmin === isAdmin) { return next(new Error('unauthorized access', { cause: 403 })) }
+            if (!verifiedToken.isAdmin === isAdmin  && verifiedToken.isAdmin === false) { return next(new Error('unauthorized access', { cause: 403 })) }
             
             //checking if user is deleted or role updated while using an old valid token
             const stillExist = await prisma.user.findUnique({where:{id:verifiedToken.id}})
