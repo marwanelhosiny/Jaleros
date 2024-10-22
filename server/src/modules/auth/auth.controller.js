@@ -265,9 +265,6 @@ export const getUsers = async (req, res, next) => {
                 mode: 'insensitive',
             }
         },
-        orderBy: {
-            rate: 'desc',  // Sort by rate in descending order (higher rates first)
-        },
         skip: (page - 1) * limit,  // For pagination
         take: parseInt(limit),  // Limit number of results
     });
