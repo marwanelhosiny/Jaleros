@@ -187,7 +187,16 @@ export const getSubscriptionRequests = async(req, res , next) =>{
     }
     })
 
-    res.status(200).json(subscriptions)
+    if(!subscriptions.length){
+        return res.status(404).json({ message: "No subscription requests found"})
+    }
+
+    let newSubscriptions = subscriptions.map((subscription)=>{
+        const payment = `https://jaleros.com/uploads/payments/${subscription.id}/payment.png`
+        return {...subscription, payment }
+    })
+
+    res.status(200).json(newSubscriptions)
 
 }
 

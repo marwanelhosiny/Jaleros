@@ -26,3 +26,12 @@ export const getCategories = async(req,res,next)=>{
     res.status(200).json(categories)
 }
 
+
+
+export const deleteCategory = async(req,res,next)=>{
+    const { id } = req.params
+    await prisma.category.delete({
+        where: { id: parseInt(id)  }
+    })
+    res.status(200).json({ message: 'Category deleted successfully'})
+}

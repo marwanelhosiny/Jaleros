@@ -11,6 +11,7 @@ const router = Router()
 
 router.post('/', validationFunction(addcategorySchema) ,auth(true), expressAsyncHandler(cc.addCategory))
 router.get('/', auth(), expressAsyncHandler(cc.getCategories))
+router.delete('/:id', auth(true), expressAsyncHandler(cc.deleteCategory))
 
 
 
