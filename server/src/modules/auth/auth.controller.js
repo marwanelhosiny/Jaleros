@@ -117,6 +117,8 @@ export const getUserData = async (req,res,next) => {
             verified: true,
             createdAt: true,
             updatedAt: true,
+            plan: true,
+            points: true,
             // The password field is not included
         } })
     if (!userData) { return next(new Error('user not found', { cause: 404 })) }

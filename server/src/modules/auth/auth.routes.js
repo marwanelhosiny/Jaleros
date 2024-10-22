@@ -16,7 +16,7 @@ router.post('/resetpass', validationFunction(resetpassSchema), expressAsyncHandl
 router.delete('/', auth(), expressAsyncHandler(ac.deleteUser))
 
 router.get('/', auth(), expressAsyncHandler(ac.getUserData))
-router.get('/allusers', auth(), expressAsyncHandler(ac.getUserData))
+router.get('/allusers', auth(), expressAsyncHandler(ac.getUsers))
 
 
 router.delete('/suspend/:id', auth(true), expressAsyncHandler(ac.delUser))
