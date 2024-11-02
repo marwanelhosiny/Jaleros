@@ -405,12 +405,15 @@ export const getCards = async (req, res, next) => {
             skip: (page - 1) * limit,  // For pagination
             take: parseInt(limit),  // Limit number of results
         });
+    const total = cards.length
+
 
         res.status(200).json({
             message: 'Cards fetched successfully',
             cards,
             page,
             limit,
+            total
         });
 
 };
