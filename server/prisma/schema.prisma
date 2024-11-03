@@ -209,12 +209,14 @@ model Subscription{
   planId  Int   
   subscribedAt   DateTime @default(now())
   subscribeEnd   DateTime
+  promoCode      String?
 
   subscriptionStatus SubscriptionStatus @default(pending)
 
   // Relationships
   user   User   @relation("UserSubscriptionRelation", fields: [userId], references: [id])
   plan   Plan   @relation("PlanSubscriptionRelation", fields: [planId], references: [id])
+  promocode   PromoCode?   @relation("PromoCodeSubscriptionRelation", fields: [promoCode], references: [code])
 
   // Unique constraint to ensure a user can't supscribe the same person twice
     // constraint
@@ -245,4 +247,26 @@ model Notification {
   user        User     @relation("UserNotifications",fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+
+model PromoCode {
+  id           Int       @id @default(autoincrement())
+  code         String    @unique
+  discountType DiscountType
+  discountValue Float
+  maxUsage     Int       @default(1) // The maximum number of times the code can be used
+  timesUsed    Int       @default(0) // Track the current usage count
+  isActive     Boolean   @default(true)
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  subscription Subscription[] @relation("PromoCodeSubscriptionRelation") // subscription this user is on
+
+}
+
+enum DiscountType {
+  PERCENTAGE // e.g., 10% off
+  FIXED      // e.g., $10 off
 }

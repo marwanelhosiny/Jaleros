@@ -22,6 +22,7 @@ app.use('/api/category',routes.categoryRouter)
 app.use('/api/plan',routes.planRouter)
 app.use('/api/blog',routes.blogRouter)
 app.use('/api/notification',routes.notificationRouter)
+app.use('/api/promocode',routes.promocodeRouter)
 
 
 

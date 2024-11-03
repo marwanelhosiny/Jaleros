@@ -1,6 +1,7 @@
 import prisma from "../../../DB/prisma.js"
 import path from 'path';
 import fs from 'fs';
+import { connect } from "http2";
 
 
 
@@ -83,7 +84,28 @@ export const getPlanById = async(req, res , next) =>{
 
 export const subscribePlan = async(req, res , next) =>{
 
-    let { userId, planId } = req.body;
+    let { userId, planId , promo } = req.body;
+
+    if(promo){
+        // Validate promo code
+        const getpromoCode = await prisma.promoCode.findFirst({
+            where: { code: promo }
+        })
+        if(!getpromoCode || getpromoCode.isActive==false){
+            return res.status(400).json({ message: "Invalid or expired promo code"})
+        }
+        const promo = await prisma.promoCode.update({
+            where: { code: promo },
+            data: { timesUsed: promoCode.timesUsed+1 }
+        })
+        
+        if (promo.timesUsed >= promo.maxUsage ){
+            await prisma.promoCode.update({
+                where: { code: promo },
+                data: { isActive: false }
+            })
+        }
+    }
 
     const paymentDocFile = req.file
     if(!paymentDocFile){
@@ -110,7 +132,8 @@ export const subscribePlan = async(req, res , next) =>{
             user: { connect: { id: userId } },
             plan: { connect: { id: planId } },
             subscribeEnd: new Date('2025-10-01'), // Set subscription end date
-            subscriptionStatus: 'pending' // Set the subscription status
+            subscriptionStatus: 'pending', // Set the subscription status
+            promoCode: { connect:{ code: promo}}
         },
         include: {
         user: true,  // Include full user details
