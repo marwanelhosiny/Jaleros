@@ -19,7 +19,7 @@ export const addPromoCode = async(req,res,next)=>{
                 discountType,
                 discountValue,
                 maxUsage,
-                expiresAt,
+                expiresAt: new Date(expiresAt),
             },
         }
     )
