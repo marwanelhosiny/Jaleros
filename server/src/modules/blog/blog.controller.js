@@ -61,7 +61,7 @@ export const getAllBlogs = async(req, res, next) => {
             skip: (page - 1) * limit,  // For pagination
             take: parseInt(limit),  // Limit number of results
         });
-        let total = blogs.length
+    const total = await prisma.blog.count()
         res.json({
             message: 'Blogs fetched successfully',
             items: blogs,

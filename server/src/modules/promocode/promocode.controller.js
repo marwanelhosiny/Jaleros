@@ -42,7 +42,8 @@ export const getAllPromos = async(req,res,next)=>{
     if (!allPromos){
         return res.status(404).json({message: "No promo codes found"})
     }
-    const total = allPromos.length // Count total number of promo codes
+     // Count total number of promo codes
+     const total = await prisma.promoCode.count()
     res.status(200).json({
         message: 'promos fetched successfully',
         allPromos,

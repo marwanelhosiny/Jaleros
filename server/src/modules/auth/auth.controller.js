@@ -269,7 +269,7 @@ export const getUsers = async (req, res, next) => {
         take: parseInt(limit),  // Limit number of results
     });
 
-    const total = users.length
+    const total = await prisma.user.count()
 
     res.status(200).json({
         message: 'users fetched successfully',

@@ -48,7 +48,7 @@ export const getNotifications = async(req,res,next)=>{
         skip: (page - 1) * limit,  // For pagination
         take: parseInt(limit),  // Limit number of results
     })
-    const total = notifications.length
+    const total = await prisma.notification.count()
 
     res.status(200).json({
         message: 'notifications fetched successfully',

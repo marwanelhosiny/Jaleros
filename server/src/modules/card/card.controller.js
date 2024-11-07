@@ -405,7 +405,7 @@ export const getCards = async (req, res, next) => {
             skip: (page - 1) * limit,  // For pagination
             take: parseInt(limit),  // Limit number of results
         });
-    const total = cards.length
+    const total = await prisma.card.count()
 
 
         res.status(200).json({
