@@ -27,6 +27,10 @@ export const createCard = async (req, res, next) => {
         const cvDocFile = req.files['cv'] ? req.files['cv'][0] : null;
         const galleryDocFiles = req.files['gallery'] || [];
 
+        const user =await prisma.user.findUnique({where: {id: userId}})
+        if (!user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
         // Create a new card in the database
         const card = await prisma.card.create({
             data: {
@@ -45,7 +49,8 @@ export const createCard = async (req, res, next) => {
                 profilePic: '',
                 coverPic: '',
                 gallery: [],
-                customFields
+                customFields,
+                type:user.plan
             },
         });
 
@@ -496,7 +501,7 @@ export const sponsoredCards = async (req, res, next) => {
         skip: (page - 1) * limit,  // For pagination
         take: parseInt(limit),  // Limit number of results
     });
-    const total = cards.length
+    const total = await prisma.card.count()
 
     res.status(200).json({
         message: 'Cards fetched successfully',
