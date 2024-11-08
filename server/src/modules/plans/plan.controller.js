@@ -132,15 +132,14 @@ export const subscribePlan = async(req, res , next) =>{
             user: { connect: { id: userId } },
             plan: { connect: { id: planId } },
             subscribeEnd: new Date('2025-10-01'), // Set subscription end date
-            subscriptionStatus: 'pending', // Set the subscription status
-            promoCode: { connect:{ code: promo}}
+            subscriptionStatus: 'pending',
+            promocode: promo ? { connect: { code: promo } } : undefined // Use lowercase "promocode" here
         },
         include: {
-        user: true,  // Include full user details
-        plan: true   // Include full plan details
-    }
-
-    })
+            user: true,
+            plan: true
+        }
+    });
     if(!subscription){
         return res.status(400).json({ message: "Failed to subscribe plan"})
     }
