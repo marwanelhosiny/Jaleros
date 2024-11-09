@@ -119,8 +119,9 @@ export const subscribePlan = async(req, res , next) =>{
     // Check if user already has a subscription to the same plan
     const existingSubscription = await prisma.subscription.findFirst({
         where: {
-            user: { id: userId },
-            plan: { id: planId }
+            userId: userId,
+            planId: planId,
+            subscriptionStatus: { in: ['pending', 'paid'] } // Use 'in' operator for multiple status values
         }
     })
     if(existingSubscription){
